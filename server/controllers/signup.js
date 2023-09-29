@@ -21,5 +21,4 @@ exports.signUp = async (req, res, next) =>{
         res.json({msg:"User already Exists"})
     }
 
-
 }

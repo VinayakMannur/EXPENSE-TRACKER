@@ -1,8 +1,27 @@
 import React from 'react'
+import axios from "axios";
 import { Link } from "react-router-dom";
 import '../css/Loginsign.css'
 
 const Login = () => {
+
+    const loginBtn = async (e) => {
+        e.preventDefault()
+
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+        // const checked = document.getElementById('loginRemember').checked;
+
+        await axios.post('http://localhost:5000/login',{
+            email: email,
+            password: password
+        })
+        .then(responce =>{
+            alert(responce.data.msg);
+        })
+        .catch(err => console.log(err))
+    }
+
     return (
         <div id="intro" className="bg-image shadow-2-strong">
             <div className="mask d-flex align-items-center h-100" id='introDiv' >
@@ -12,18 +31,18 @@ const Login = () => {
                             <form className="bg-white py-4 rounded-5 shadow-5-strong p-5">
                                 <h4 className='text-center'>Login</h4>
                                 <div className="form-outline mb-4">
-                                    <label className="form-label" htmlFor="form1Example1">Email address</label>
-                                    <input type="email" id="form1Example1" className="form-control" required/>
+                                    <label className="form-label" htmlFor="loginEmail">Email address</label>
+                                    <input type="email" id="loginEmail" className="form-control" required/>
                                 </div>
                                 <div className="form-outline mb-4">
-                                    <label className="form-label" htmlFor="form1Example2">Password</label>
-                                    <input type="password" id="form1Example2" className="form-control" required/>
+                                    <label className="form-label" htmlFor="loginPassword">Password</label>
+                                    <input type="password" id="loginPassword" className="form-control" required/>
                                 </div>
                                 <div className="row mb-4">
                                     <div className="col d-flex justify-content-center">
                                         <div className="form-check">
-                                            <input className="form-check-input" type="checkbox" value="" id="form1Example3"/>
-                                            <label className="form-check-label" htmlFor="form1Example3">
+                                            <input className="form-check-input" type="checkbox" value="" id="loginRemember"/>
+                                            <label className="form-check-label" htmlFor="loginRemember">
                                                 Remember me
                                             </label>
                                         </div>
@@ -32,7 +51,7 @@ const Login = () => {
                                         <a href="/forgotpassword">Forgot password?</a>
                                     </div>
                                 </div>
-                                <button type="submit" className="btn btn-sm btn-primary btn-block">Log in</button>
+                                <button type="submit" onClick={loginBtn} className="btn btn-sm btn-primary btn-block">Log in</button>
                                 <div className='mt-4'>
                                     <p>Dont have an account..?</p>
                                     <Link className="btn btn-sm btn-success me-2" to="/signup">Sign Up</Link>
