@@ -1,17 +1,25 @@
-const Signup = require('../models/signup');
+const User = require('../models/signup');
 
-exports.signUp = (req, res, next) =>{
+exports.signUp = async (req, res, next) =>{
     const email= req.body.email;
     const name = req.body.name;
     const password = req.body.password;
     
-    Signup.create({
-        email: email,
-        name: name,
-        password: password
-    })
-        .then(result => {
-            res.send(result)
+    const findingEmail =  await User.findOne({where: {email: `${email}`}});
+    if(findingEmail === null){
+        User.create({
+            email: email,
+            name: name,
+            password: password
         })
-        .catch(err => console.log(err))
+            .then(result => {
+                res.json({msg: "Sign Up SUCCESSFUL"})
+            })
+            .catch(err => console.log(err))
+    }
+    else{
+        res.json({msg:"User already Exists"})
+    }
+
+
 }

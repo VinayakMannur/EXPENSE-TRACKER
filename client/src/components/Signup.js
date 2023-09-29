@@ -6,8 +6,8 @@ const Signup = () => {
 
   const navigate = useNavigate();
 
-  const signUpBtn = async () => {
-
+  const signUpBtn = async (e) => {
+    e.preventDefault()
     function handleClick(){
       navigate("/login")
     }
@@ -23,7 +23,8 @@ const Signup = () => {
         password: password
       })
       .then(responce => {
-        alert('Sign Up successfull')
+        // console.log(responce);
+        alert(responce.data.msg)
         if(responce.status === 200){
           handleClick()
         }  
