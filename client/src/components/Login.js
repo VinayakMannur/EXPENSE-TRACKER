@@ -19,7 +19,10 @@ const Login = () => {
         .then(responce =>{
             alert(responce.data.msg);
         })
-        .catch(err => console.log(err))
+        .catch(err => {
+            // console.log(err)
+            alert(err.response.data.msg)
+        })
     }
 
     return (

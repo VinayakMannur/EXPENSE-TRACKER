@@ -6,13 +6,13 @@ exports.logIn = async (req, res, next) =>{
 
     const user = await User.findAll({where: {email:`${email}`}});
     if(user[0] === undefined){
-        res.json({msg:"User doesnt Exists!!"});
+        res.status(404).send({msg:"User doesnt Exists!!"});
     }
     else if(user[0].dataValues.email === email && user[0].dataValues.password === password){
         res.json({msg:"Login Successfull !!"});
     }
     else{
-        res.json({msg:"Email Password doesnt match !!"})
+        res.status(401).send({msg:"Email Password doesnt match !!"});
     }
     
 }
