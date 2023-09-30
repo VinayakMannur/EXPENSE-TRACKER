@@ -21,6 +21,8 @@ const Login = () => {
         })
         .catch(err => {
             // console.log(err)
+            document.getElementById('loginEmail').value = '';
+            document.getElementById('loginPassword').value = '';
             alert(err.response.data.msg)
         })
     }
