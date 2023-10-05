@@ -1,5 +1,9 @@
+/* https://mdbootstrap.com/img/new/fluid/city/008.jpg */
+
 #intro {
-    background-image: url(https://mdbootstrap.com/img/new/fluid/city/008.jpg);
+    background-image: url('../images/alexander-mils-lCPhGxs7pww-unsplash.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
     height: 92.1vh;
 }
 

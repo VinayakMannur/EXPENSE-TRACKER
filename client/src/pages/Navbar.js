@@ -1,14 +1,14 @@
 import React from 'react'
-import { Link } from "react-router-dom";
-import logo from '../png/logo1.png'
+import { Link, Outlet } from "react-router-dom";
+
 
 const Navbar = () => {
     return (
-        
+        <>
         <nav className="navbar bg-dark navbar-expand-lg px-5 py-0 bg-body-tertiary" data-bs-theme="dark">
             <div className="container-fluid my-2">
                 <a className="navbar-brand" href="/">
-                    <img src={logo} alt="Logo" width="30" height="24" className="d-inline-block align-text-top" /> Expense-Tracker
+                    <img src="" alt="Logo" width="30" height="24" className="d-inline-block align-text-top" /> Expense-Tracker
                 </a>
                 <div className="collapse navbar-collapse" id="navbarNav">
                     <ul className="navbar-nav">
@@ -23,7 +23,8 @@ const Navbar = () => {
                 </form>
             </div>
         </nav>
-
+        <Outlet/>
+        </>
     )
 }
 

@@ -1,4 +1,4 @@
-const User = require('../models/signup');
+const User = require('../models/user');
 const bcrypt = require('bcrypt');
 
 exports.logIn = async (req, res, next) =>{
@@ -13,13 +13,13 @@ exports.logIn = async (req, res, next) =>{
     }
 
     if(user[0] === undefined){
-        res.status(404).send({msg:"User doesnt Exists!!"});
+        return res.status(404).send({msg:"User doesnt Exists!!"});
     }
     else if(user[0].dataValues.email === email && result){
-        res.json({msg:"Login Successfull !!"});
+        res.json({user:user[0].dataValues, msg:"Login Successfull !!"});
     }
     else{
-        res.status(401).send({msg:"Email Password doesnt match !!"});
+        return res.status(401).send({msg:"Email Password doesnt match !!"});
     }
     
 }

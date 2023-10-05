@@ -1,4 +1,4 @@
-const User = require('../models/signup');
+const User = require('../models/user');
 const bcrypt = require('bcrypt');
 
 exports.signUp = async (req, res, next) =>{
@@ -15,7 +15,7 @@ exports.signUp = async (req, res, next) =>{
         password: hash
     })
         .then(result => {
-            res.json({msg: "Sign Up SUCCESSFUL"})
+            res.json({user:result, msg: "Sign Up SUCCESSFUL"})
         })
         .catch(err => {
             // console.log(err);

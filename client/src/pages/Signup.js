@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react'
 import axios from "axios";
 import { useNavigate } from 'react-router';
 
@@ -8,34 +8,36 @@ const Signup = () => {
 
   const signUpBtn = async (e) => {
     e.preventDefault()
-    function handleClick(){
-      navigate("/login")
-    }
 
     const email = document.getElementById('signUpEmail').value;
     const name = document.getElementById('signUpName').value;
     const password = document.getElementById('signUpPassword').value;
 
-    if((email && name && password) !== ''){
+    if ((email && name && password) !== '') {
       await axios.post('http://localhost:5000/signup', {
         email: email,
         name: name,
         password: password
       })
-      .then(responce => {
-        // console.log(responce);
-        alert(responce.data.msg)
-        if(responce.status === 200){
-          handleClick()
-        }  
-      })
-      .catch(err => console.log(err))
+        .then(responce => {
+          // console.log(responce);
+          alert(responce.data.msg)
+          if (responce.status === 200) {
+            navigate("/login")
+          }
+        })
+        .catch(err => console.log(err))
     }
   }
 
+  useEffect(() => {
+    if (localStorage.getItem('user')) {
+      navigate('/home')
+    }
+  }, [navigate])
 
   return (
-    <div id="intro" className="bg-image shadow-2-strong">
+    <div id="intro" className="bg-image shadow-2-strong ">
       <div className="mask d-flex align-items-center h-100" id='introDiv' >
         <div className="container">
           <div className="row justify-content-center">
@@ -52,7 +54,7 @@ const Signup = () => {
                 </div>
                 <div className="form-outline mb-4">
                   <label className="form-label" htmlFor="signUpPassword">Password</label>
-                  <input type="password" id="signUpPassword" className="form-control" required/>
+                  <input type="password" id="signUpPassword" className="form-control" required />
                 </div>
                 <button type="submit" onClick={signUpBtn} className="btn btn-primary btn-block">Sign Up</button>
               </form>
