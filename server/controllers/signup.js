@@ -15,7 +15,8 @@ exports.signUp = async (req, res, next) =>{
         password: hash
     })
         .then(result => {
-            res.json({user:result, msg: "Sign Up SUCCESSFUL"})
+            // console.log(result.dataValues.id);
+            res.json({ user:result, msg: "Sign Up SUCCESSFUL"})
         })
         .catch(err => {
             // console.log(err);

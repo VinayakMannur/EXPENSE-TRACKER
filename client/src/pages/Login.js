@@ -21,7 +21,8 @@ const Login = () => {
             password: password
         })
             .then(responce => {
-                localStorage.setItem("user", JSON.stringify({ ...responce.data.user, password: '' }))
+                localStorage.setItem("authToken", responce.data.authToken)
+                localStorage.setItem("user", JSON.stringify({ ...responce.data.user, password: '', id:'', createdAt:'',updatedAt:''}))
                 alert(responce.data.msg);
                 navigate("/home")
             })

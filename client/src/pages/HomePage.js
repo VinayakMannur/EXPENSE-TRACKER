@@ -10,8 +10,6 @@ import Analytics from '../components/layout/Analytics';
 
 const HomePage = () => {
 
-    const userId = JSON.parse(localStorage.getItem('user')).id;
-
     const [allExpenses, setAllExpenses] = useState([]);
     const [frequency, setFrequency] = useState([]);
     const [viewData, setViewData] = useState('table');
@@ -61,11 +59,17 @@ const HomePage = () => {
     ]
 
     const getExpenses = async () => {
-        await axios.post(`http://localhost:5000/get-expense/${userId}`, {
+        await axios.post('http://localhost:5000/get-expense', {
             frequency: frequency
+        },{
+            headers:{
+                authToken: localStorage.getItem('authToken')
+            }
         })
             .then(result => {
-                setAllExpenses(result.data);
+                const reverseData = result.data
+                setAllExpenses(reverseData.reverse());
+                // setAllExpenses(result.data);
             })
             .catch(err => {
                 console.log(err);
@@ -79,6 +83,10 @@ const HomePage = () => {
     const deleteExpense = async (record)  => {
         await axios.post('http://localhost:5000/delete-expense', {
             id: record.id
+        },{
+            headers:{
+                authToken: localStorage.getItem('authToken')
+            }
         })
             .then(result => {
                 alert(result.data.msg)
@@ -97,12 +105,16 @@ const HomePage = () => {
         const description = document.getElementById('description').value
         const date = document.getElementById('date').value 
 
-        await axios.post(`http://localhost:5000/edit-expense/${userId}`, {
+        await axios.post('http://localhost:5000/edit-expense', {
             id: expenseEditId,
             amount: amount,
             category: category,
             description: description,
             date: date
+        },{
+            headers:{
+                authToken: localStorage.getItem('authToken')
+            }
         })
             .then(result => {
                 alert(result.data.msg);
@@ -130,11 +142,15 @@ const HomePage = () => {
         const description = document.getElementById('description').value;
         const date = document.getElementById('date').value;
 
-        await axios.post(`http://localhost:5000/add-expense/${userId}`, {
+        await axios.post('http://localhost:5000/add-expense', {
             amount: amount,
             category: category,
             description: description,
             date: date
+        },{
+            headers:{
+                authToken: localStorage.getItem('authToken')
+            }
         })
             .then(result => {
                 alert(result.data.msg);
@@ -166,7 +182,7 @@ const HomePage = () => {
                 </div>
                 <div className="content mt-2">
                     {viewData === 'table'? <Table columns={columns} dataSource={allExpenses} />:
-                        <Analytics allExpenses={allExpenses}/>
+                        <Analytics allExpenses={allExpenses} frequency={frequency}/>
                     }
                     
                 </div>

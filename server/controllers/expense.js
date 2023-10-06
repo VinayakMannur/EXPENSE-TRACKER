@@ -2,7 +2,7 @@ const Expense = require('../models/expense');
 const { Op } = require('sequelize');
 
 exports.addExpense = async (req, res, next) => {
-    const userId = req.params.userId;
+    const userId = req.user.userId;
     const {amount, category, description, date} = req.body;
 
     Expense.create({
@@ -21,13 +21,14 @@ exports.addExpense = async (req, res, next) => {
 }
 
 exports.getExpenses = async (req, res, next) =>{
-    const userId = req.params.userId;
+    const userId = req.user.userId;
+    // console.log('user i=>>>>>>>>>>>>>>>>>>>>>',userId);
     let expenses
     
     if(req.body.frequency > 0){
         const startDate = new Date();
         const endDate = new Date(startDate. getTime() - `${req.body.frequency}` * 24 * 60 * 60 * 1000);
-        expenses = await Expense.findAll({where: {userId: userId, date : {[Op.between] : [endDate , startDate ]}}})
+        expenses = await Expense.findAll({where: {userId: userId, date : {[Op.between] : [endDate, startDate]}}})
     }
     else{
         expenses = await Expense.findAll({where: {userId: userId}})
@@ -46,8 +47,9 @@ exports.deleteExpense = async (req, res) =>{
 }
 
 exports.editExpense = async (req, res )=>{
-    const userId = req.params.userId;
+    const userId = req.user.userId;
     const {id, amount, category, description, date} = req.body;
+
     await Expense.update({
         amount: amount,
         category: category,
