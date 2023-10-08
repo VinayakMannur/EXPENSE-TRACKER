@@ -222,6 +222,17 @@ const HomePage = () => {
         })
     }
 
+    const getLeaderBoard = async (e) =>{
+        e.preventDefault()
+        
+        const leaderboard = await axios.get('http://localhost:5000/leaderboard',{
+            headers:{
+                authToken: localStorage.getItem('authToken')
+            }
+        })
+        console.log(leaderboard);
+    }
+
     return (
         <Layout>
             <div className="container">
@@ -245,7 +256,10 @@ const HomePage = () => {
                     <button className='btn btn-outline-success btn-sm' data-bs-toggle="modal" data-bs-target="#exampleModal">Add expense</button>
                     {!success && <button type='button' className='btn btn-success btn-sm' onClick={buyPremium}>
                         Buy Premium
-                    </button>
+                    </button> 
+                    }
+                    {success && 
+                        <button type='button' className='btn btn-outline-success btn-sm' onClick={getLeaderBoard}>Get leaderboard</button>
                     }
                 </div>
                 <div className="content mt-2">

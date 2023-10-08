@@ -1,6 +1,8 @@
 const Razorpay = require('razorpay');
 const Order = require('../models/order');
-const User = require('../models/user')
+const User = require('../models/user');
+const sequelize = require('../utils/database');
+const Expense = require('../models/expense')
 
 exports.buyPremium = async (req, res, next) =>{
     const userId = req.user.userId
@@ -66,4 +68,23 @@ exports.updateStatus = async(req, res, next) =>{
         .catch(err => console.log(err))
     })
     .catch(err =>console.log(err))
+}
+
+exports.leaderBoard = async (req, res, next) =>{
+    try {
+        const leaderboardOfUsers = await User.findAll({
+            attributes: ['id', 'name', [sequelize.fn('sum', sequelize.col('expense.amount')), 'total_cost']],
+            include: [
+                {
+                    model: Expense,
+                    attributes: []
+                }
+            ],
+            group: ['user.id'],
+            order: [[('total_cost'), "DESC"]]
+        })
+        res.json(leaderboardOfUsers)
+    } catch (error) {
+        console.log(error);
+    }
 }
