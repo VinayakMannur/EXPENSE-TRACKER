@@ -18,7 +18,7 @@ const Navbar = () => {
             setLoginUser(user)
             setSuccess(user.isPremium)
         }
-    },[])
+    },[success])
 
     const logoutHandler = ()=>{
         localStorage.removeItem('authToken');
@@ -30,18 +30,18 @@ const Navbar = () => {
         <>
         <nav className="navbar bg-dark navbar-expand-lg px-5 py-0 bg-body-tertiary" data-bs-theme="dark">
             <div className="container-fluid my-2">
-                {success && 
-                    <img src={memeber} alt="Premium User" width="35" height="35" className="d-inline-block align-text-top mx-2" />
-                }
                 <a className="navbar-brand ml-5" href="/">
                      Expense-Tracker
                 </a>
+                {success && 
+                    <img src={memeber} alt="Premium User" width="35" height="35" className="d-inline-block align-text-top mx-2" />
+                }
                 <div className="collapse navbar-collapse d-flex ml-5" id="navbarNav">
-                    <ul className="navbar-nav">
+                    {/* <ul className="navbar-nav">
                         <li className="nav-item">
                             <a className="nav-link active" aria-current="page" href="/">Home</a>
                         </li>
-                    </ul>
+                    </ul> */}
                 </div>
                     <li className='me-2'>
                         <Avatar style={{ backgroundColor: '#87d068' }} icon={<UserOutlined />} /> 

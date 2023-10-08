@@ -78,7 +78,6 @@ const HomePage = () => {
                 // setAllExpenses(result.data);
                 const user = JSON.parse(localStorage.getItem('user'))
                 setSuccess(user.isPremium);
-                
             })
             .catch(err => {
                 console.log(err);
@@ -192,6 +191,9 @@ const HomePage = () => {
                 .then((result)=>{
                     // console.log(result);
                     setSuccess(true)
+                    const user = JSON.parse(localStorage.getItem('user'))
+                    localStorage.removeItem('user');
+                    localStorage.setItem("user", JSON.stringify({ ...user, isPremium: 'true'}))
                     // console.log('premium user');
                     alert('Congrats!!! Welcome to premium family')
                 })
