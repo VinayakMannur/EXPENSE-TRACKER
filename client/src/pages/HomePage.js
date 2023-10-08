@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Select, Table} from 'antd';
 import { UnorderedListOutlined, PieChartOutlined, EditOutlined, DeleteOutlined} from '@ant-design/icons';
 import axios from "axios";
+import useRazorpay from "react-razorpay";
 import moment from 'moment'
 import Layout from '../components/layout/Layout'
 import Analytics from '../components/layout/Analytics';
@@ -10,14 +11,18 @@ import Analytics from '../components/layout/Analytics';
 
 const HomePage = () => {
 
+    const [Razorpay] = useRazorpay();
+
     const [allExpenses, setAllExpenses] = useState([]);
     const [frequency, setFrequency] = useState([]);
     const [viewData, setViewData] = useState('table');
     const [edit, setEdit] = useState('normal')
     const [expenseEditId, setExpenseEditId] = useState(0);
-    
-    // const [rangeDate, setRangeDate] = useState([]);
+    const [success, setSuccess] = useState(false);
 
+    // const [rangeDate, setRangeDate] = useState([]);
+    
+    
     const columns = [
         {
             title: "Date",
@@ -67,9 +72,13 @@ const HomePage = () => {
             }
         })
             .then(result => {
+                // console.log(result);
                 const reverseData = result.data
                 setAllExpenses(reverseData.reverse());
                 // setAllExpenses(result.data);
+                const user = JSON.parse(localStorage.getItem('user'))
+                setSuccess(user.isPremium);
+                
             })
             .catch(err => {
                 console.log(err);
@@ -160,6 +169,57 @@ const HomePage = () => {
 
     }
 
+    const buyPremium = async (e) =>{
+        const response = await axios.get('http://localhost:5000/buypremium',{
+            headers:{
+                authToken: localStorage.getItem('authToken')
+            }
+        })
+        console.log(response);
+        var options = {
+            "key": response.data.key_id,
+            "order_id": response.data.order.id,
+            "handler": async function(response){
+                await axios.post('http://localhost:5000/updatetransactionstatus',{
+                    orderId: options.order_id,
+                    paymentId: response.razorpay_payment_id,
+                    status: "SUCCESS"
+                },{
+                    headers:{
+                        authToken: localStorage.getItem('authToken')
+                    }
+                })
+                .then((result)=>{
+                    // console.log(result);
+                    setSuccess(true)
+                    // console.log('premium user');
+                    alert('Congrats!!! Welcome to premium family')
+                })
+            }
+        }
+        const rpz1 = new Razorpay(options);
+        rpz1.open();
+        e.preventDefault();
+
+        rpz1.on('payment.failed',function(response){
+            axios.post('http://localhost:5000/updatetransactionstatus',{
+                orderId: options.order_id,
+                paymentId: response.error.metadata.payment_id,
+                status: "FAILURE"
+            },{
+                headers:{
+                    authToken: localStorage.getItem('authToken')
+                }
+            })
+                .then((result)=>{
+                    alert('Something went wrong!!')
+                })
+
+
+            // console.log(response.error.metadata.payment_id);
+        })
+    }
+
     return (
         <Layout>
             <div className="container">
@@ -175,12 +235,26 @@ const HomePage = () => {
                         {/* {frequency === 'custom' && <RangePicker value={rangeDate} onChange={(values) => setRangeDate(values)} />} */}
                     </div>
                     <div className="giveMargin">
-                    <UnorderedListOutlined className={`mx-2 ${viewData === 'table'?'active-icon':'inactive-icon'}`} onClick={()=>setViewData('table')}/>
+                        <UnorderedListOutlined className={`mx-2 ${viewData === 'table'?'active-icon':'inactive-icon'}`} onClick={()=>setViewData('table')}/>
                     </div>
-                    <PieChartOutlined className={`mx-2 ${viewData === 'analytics'?'active-icon':'inactive-icon'}`} onClick={()=>setViewData('analytics')}/>
+                    {success &&
+                        <PieChartOutlined className={`mx-2 ${viewData === 'analytics'?'active-icon':'inactive-icon'}`} onClick={()=>setViewData('analytics')}/>
+                    }
                     <button className='btn btn-outline-success btn-sm' data-bs-toggle="modal" data-bs-target="#exampleModal">Add expense</button>
+                    {!success && <button type='button' className='btn btn-success btn-sm' onClick={buyPremium}>
+                        Buy Premium
+                    </button>
+                    }
                 </div>
                 <div className="content mt-2">
+                    {!success &&
+                        <div className='text-center'>
+                            To access all the features of the Expense Tracker. 
+                            <button type='button' className='btn btn-link' onClick={buyPremium}>
+                                Join Premium Family
+                            </button>
+                        </div>
+                    }      
                     {viewData === 'table'? <Table columns={columns} dataSource={allExpenses} />:
                         <Analytics allExpenses={allExpenses} frequency={frequency}/>
                     }

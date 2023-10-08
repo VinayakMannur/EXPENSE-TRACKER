@@ -12,7 +12,8 @@ exports.signUp = async (req, res, next) =>{
     User.create({
         email: email,
         name: name,
-        password: hash
+        password: hash,
+        isPremium: false
     })
         .then(result => {
             // console.log(result.dataValues.id);

@@ -2,19 +2,21 @@ import React,{useState, useEffect} from 'react'
 import { UserOutlined } from '@ant-design/icons';
 import { Avatar} from 'antd';
 import {Outlet, useNavigate } from "react-router-dom";
+import memeber from '../images/membership.png'
 
-// import logo from '../png/logo1.png'
 
 const Navbar = () => {
 
     const navigate = useNavigate()
 
     const [loginUser, setLoginUser] = useState('');
+    const [success, setSuccess] = useState(false)
 
     useEffect(()=>{
         const user = JSON.parse(localStorage.getItem('user'));
         if(user){
             setLoginUser(user)
+            setSuccess(user.isPremium)
         }
     },[])
 
@@ -28,8 +30,10 @@ const Navbar = () => {
         <>
         <nav className="navbar bg-dark navbar-expand-lg px-5 py-0 bg-body-tertiary" data-bs-theme="dark">
             <div className="container-fluid my-2">
+                {success && 
+                    <img src={memeber} alt="Premium User" width="35" height="35" className="d-inline-block align-text-top mx-2" />
+                }
                 <a className="navbar-brand ml-5" href="/">
-                    {/* <img  alt="Logo" width="30" height="24" className="d-inline-block align-text-top" /> */}
                      Expense-Tracker
                 </a>
                 <div className="collapse navbar-collapse d-flex ml-5" id="navbarNav">
