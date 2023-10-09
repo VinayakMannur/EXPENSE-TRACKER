@@ -1,11 +1,12 @@
 const Expense = require('../models/expense');
+const User = require('../models/user');
 const { Op } = require('sequelize');
 
 exports.addExpense = async (req, res, next) => {
     const userId = req.user.userId;
     const {amount, category, description, date} = req.body;
 
-    Expense.create({
+    await Expense.create({
         amount: amount,
         category: category,
         description: description,
@@ -18,6 +19,9 @@ exports.addExpense = async (req, res, next) => {
         .catch(err => {
             console.log(err);
         })
+    
+    // await User.increment({age: 5}, { where: { id: 1 } })
+    const update = await User.increment('totalexpense', {by : amount, where:{id: userId}})
 }
 
 exports.getExpenses = async (req, res, next) =>{

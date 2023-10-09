@@ -18,7 +18,7 @@ const App = () => {
             <Route path="signup" element={<Signup />} />
           </Route>
           <Route exact path='/home' element={<ProtectedRoutes><HomePage/></ProtectedRoutes>}/>
-
+        
         </Routes>
       </Router>
     </>

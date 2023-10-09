@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { Select, Table} from 'antd';
-import { UnorderedListOutlined, PieChartOutlined, EditOutlined, DeleteOutlined} from '@ant-design/icons';
+import { UnorderedListOutlined, PieChartOutlined, EditOutlined, DeleteOutlined,CloseOutlined} from '@ant-design/icons';
 import axios from "axios";
 import useRazorpay from "react-razorpay";
 import moment from 'moment'
 import Layout from '../components/layout/Layout'
 import Analytics from '../components/layout/Analytics';
+
 
 // const { RangePicker } = DatePicker;
 
@@ -19,10 +20,9 @@ const HomePage = () => {
     const [edit, setEdit] = useState('normal')
     const [expenseEditId, setExpenseEditId] = useState(0);
     const [success, setSuccess] = useState(false);
-
-    // const [rangeDate, setRangeDate] = useState([]);
-    
-    
+    const [showLeaderboard, setShowLeaderboard] = useState(false)
+    const [leaderboardData, setLeaderboardData] = useState([])
+ 
     const columns = [
         {
             title: "Date",
@@ -63,6 +63,26 @@ const HomePage = () => {
         }
     ]
 
+    const colLeaderBoard = [
+        {
+            title: "Name",
+            dataIndex: 'name'
+        },
+        {
+            title: "Total Expense",
+            dataIndex: 'total_cost'
+        },
+        {
+            title: "Actions",
+            key: 'action',
+            render: (text, record)=>(
+                <CloseOutlined className='mx-2' onClick={()=>{
+                        setShowLeaderboard(false)
+                }}/>
+            )
+        }
+    ]
+
     const getExpenses = async () => {
         await axios.post('http://localhost:5000/get-expense', {
             frequency: frequency
@@ -76,6 +96,7 @@ const HomePage = () => {
                 const reverseData = result.data
                 setAllExpenses(reverseData.reverse());
                 // setAllExpenses(result.data);
+                console.log(reverseData.reverse());
                 const user = JSON.parse(localStorage.getItem('user'))
                 setSuccess(user.isPremium);
             })
@@ -216,8 +237,6 @@ const HomePage = () => {
                 .then((result)=>{
                     alert('Something went wrong!!')
                 })
-
-
             // console.log(response.error.metadata.payment_id);
         })
     }
@@ -225,12 +244,17 @@ const HomePage = () => {
     const getLeaderBoard = async (e) =>{
         e.preventDefault()
         
-        const leaderboard = await axios.get('http://localhost:5000/leaderboard',{
+        await axios.get('http://localhost:5000/leaderboard',{
             headers:{
                 authToken: localStorage.getItem('authToken')
             }
+        }).then((leaderboardUsers)=>{
+            console.log(leaderboardUsers)
+            setLeaderboardData(leaderboardUsers.data)
+            setShowLeaderboard(true)
+            
         })
-        console.log(leaderboard);
+
     }
 
     return (
@@ -261,7 +285,7 @@ const HomePage = () => {
                     {success && 
                         <button type='button' className='btn btn-outline-success btn-sm' onClick={getLeaderBoard}>Get leaderboard</button>
                     }
-                </div>
+                </div> 
                 <div className="content mt-2">
                     {!success &&
                         <div className='text-center'>
@@ -274,7 +298,7 @@ const HomePage = () => {
                     {viewData === 'table'? <Table columns={columns} dataSource={allExpenses} />:
                         <Analytics allExpenses={allExpenses} frequency={frequency}/>
                     }
-                    
+                    {showLeaderboard && viewData === 'table' && <Table columns={colLeaderBoard} dataSource={leaderboardData} title={() => <h3>Leader Board</h3>}/>}
                 </div>
                 <div>
                     <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
