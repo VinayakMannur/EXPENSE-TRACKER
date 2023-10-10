@@ -66,7 +66,7 @@ const Login = () => {
                                         </div>
                                     </div>
                                     <div className="col text-center">
-                                        <a href="/forgotpassword">Forgot password?</a>
+                                        <Link to="/forgotpassword">Forgot password?</Link>
                                     </div>
                                 </div>
                                 <button type="submit" onClick={loginBtn} className="btn btn-sm btn-primary btn-block">Log in</button>

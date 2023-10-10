@@ -1,12 +1,13 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import axios from "axios";
-import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router';
 import '../css/Loginsign.css'
 
 const Login = () => {
 
     const navigate = useNavigate();
+
+    const [success, setSuccess] = useState(false);
 
     const submitBtn = async (e) => {
         e.preventDefault()
@@ -17,7 +18,32 @@ const Login = () => {
             email: email
         })
             .then(responce => {
-                console.log(responce);
+                // console.log(responce);
+                if(responce.data.success){
+                    setSuccess(responce.data.success)
+                }
+                else{
+                    alert(responce.data.msg)
+                    navigate("/signup")
+                }
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    }
+
+    const updatedPassword = async (e) =>{
+        e.preventDefault()
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+
+        await axios.post('http://localhost:5000/password/updatepassword', {
+            email: email,
+            password: password
+        })
+            .then(responce => {
+                alert(responce.data.msg);
+                navigate("/home")
             })
             .catch(err => {
                 console.log(err)
@@ -42,7 +68,15 @@ const Login = () => {
                                     <label className="form-label" htmlFor="loginEmail">Email address</label>
                                     <input type="email" id="loginEmail" className="form-control" required />
                                 </div>
-                                <button type="submit" onClick={submitBtn} className="btn btn-sm btn-primary btn-block">Submit</button>
+                                {success &&
+                                    <div className="form-outline mb-4">
+                                        <label className="form-label" htmlFor="loginPassword">Password</label>
+                                        <input type="password" id="loginPassword" className="form-control" required />
+                                    </div>
+                                }
+                                {success ===true ?  <button type="submit" onClick={updatedPassword} className="btn btn-sm btn-primary btn-block">Submit</button>:
+                                    <button type="submit" onClick={submitBtn} className="btn btn-sm btn-primary btn-block">Submit</button>
+                                }
                             </form>
                         </div>
                     </div>

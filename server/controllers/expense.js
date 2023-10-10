@@ -25,7 +25,7 @@ exports.addExpense = async (req, res, next) => {
             res.json({expense: promise1, msg: "Added expense"})
         })
 
-    } catch (error) {
+    } catch( error ){
         // await t.rollback();
         console.log(error);
     }

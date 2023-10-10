@@ -11,6 +11,7 @@ const signupRoutes = require('./routes/signup')
 const loginRoutes = require('./routes/login');
 const expenseRoutes = require('./routes/expense');
 const premiumRoutes = require('./routes/premium')
+const forgotPasswordRoutes = require('./routes/forgotpassword')
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use(signupRoutes);
 app.use(loginRoutes);
 app.use(expenseRoutes);
 app.use(premiumRoutes);
+app.use(forgotPasswordRoutes);
 
 User.hasOne(Expense);
 User.hasOne(Premium)
@@ -30,6 +32,6 @@ sequelize
     .sync()
     .then(res =>{
         app.listen(5000,()=>{
-            console.log('connected');
+            console.log('Avengers assemble at PORT 5000');
         })
     });

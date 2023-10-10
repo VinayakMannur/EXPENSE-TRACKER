@@ -5,6 +5,7 @@ import Login from './pages/Login';
 import Navbar from './pages/Navbar';
 import Signup from  './pages/Signup';
 import HomePage from './pages/HomePage';
+import Forgotpassword from './pages/Forgotpassword';
 
 
 const App = () => {
@@ -16,6 +17,7 @@ const App = () => {
           <Route path='/' element={<Navbar />}>
             <Route path="login" element={<Login />} />
             <Route path="signup" element={<Signup />} />
+            <Route path="forgotpassword" element={<Forgotpassword/>}/>
           </Route>
           <Route exact path='/home' element={<ProtectedRoutes><HomePage/></ProtectedRoutes>}/>
         
