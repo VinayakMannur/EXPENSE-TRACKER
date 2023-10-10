@@ -1,0 +1,134 @@
+{/* <div className="row mt-3" >
+                <div className="col">
+                    <div className="card mb-3 ">
+                        <div className="card-header">
+                            <h6>
+                                Total Expense : {totalExpenses}
+                            </h6>
+                        </div>
+                        <div className="card-body">
+                            <Doughnut data={data} />
+                        </div>
+                    </div>
+                </div>
+                <div className="col">
+                    <div className="card">
+                        <div className="card-header font-weight-bold">
+                            <h6>
+                                Total Expense : {totalExpenseAmount}
+                            </h6>
+                        </div>
+                        <div className="card-body">
+                            {barData &&
+                                <Bar data={barData} />
+                            }
+                        </div>
+                    </div>
+                    <div class="container my-5">
+                        <div class="row my-5">
+                            <div class="col text-center">
+                                <button type='button' className='btn btn-success btn-sm my-5' data-bs-toggle="modal" data-bs-target="#report">Download Report</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> */}
+{/* <div id='pdfReport' >
+                <div class="modal fade" id="report" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-xl">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Download Report</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            {frequency.length > 0 && <h6 className='text-center mt-3'>Your Expense of Last {frequency} Days</h6>}
+                            {frequency.length === 0 && <h6 className='text-center mt-3'>Your overall expenses</h6>}
+                            <div class="modal-body">
+                                <div className="row mt-3">
+                                    <div className="col">
+                                        <div className="card mb-3 ">
+                                            <div className="card-header">
+                                                <h6>
+                                                    Total Expense : {totalExpenses}
+                                                </h6>
+                                            </div>
+                                            <div className="card-body">
+                                                <Doughnut data={data} />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="col">
+                                        <div className="card">
+                                            <div className="card-header font-weight-bold">
+                                                <h6>
+                                                    Total Expense : {totalExpenseAmount}
+                                                </h6>
+                                            </div>
+                                            <div className="card-body">
+                                                {barData &&
+                                                    <Bar data={barData} />
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <Table columns={columns} dataSource={allExpenses} />
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary btn-sm" onClick={generatePDF}>Download</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> */}
+// var input = document.getElementById('pdfReport');
+// var doc = new jsPDF('l','pt');
+
+// await html2canvas(input,{
+//     allowTaint: true,
+//     useCORS: true
+// }).then((canvas)=>{
+//     doc.addImage(canvas.toDataURL('image/png','PNG', 0, 0, 500, 500))
+// })
+// doc.save('doc.pdf')
+
+// const input = document.getElementById('pdfReport');
+// const pdf = new jsPDF('p', 'mm','a4')
+// let imgHeight;
+// let imgData;
+// let imgWidth;
+// await html2canvas(input,{logging:true, letterRendering:1, useCORS:true}).then((canvas)=>{
+//     imgWidth = 20;
+//     imgHeight = canvas.height * imgWidth / canvas.width
+//     imgData =  canvas.toDataURL('image/png');
+// })
+// pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight)
+// pdf.save("ExpenseTracker.pdf")
+
+// const input = pdfRef.current;
+
+
+// const imgWidth = 20;
+// const imgHeight = canvas.height * imgWidth / canvas.width
+// const imgData =  canvas.toDataURL('image/png');
+// const pdf = new jsPDF('p', 'mm','a4')
+// pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight)
+// pdf.save("ExpenseTracker.pdf")
+
+
+// alert(canvas.height +'-' + canvas.width);
+// const imgData = canvas.toDataURL('image/png',1.0);
+// const pdf = new jsPDF({
+//     orientation: 'portrait',
+//     unit: 'pt',
+//     format: [612,792]
+// })
+// pdf.internal.scaleFactor = 1
+// const imgProps = pdf.getImageProperties(imgData)
+// const pdfWidth = pdf.internal.pageSize.getWidth()
+// const pdfHeight = (imgProps.height*pdfWidth)/imgProps.width
+// pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight)
+// pdf.save("ExpenseTracker.pdf")

@@ -6,6 +6,7 @@ const sequelize = require('./utils/database');
 const User = require('./models/user');
 const Expense = require('./models/expense');
 const Premium = require('./models/order')
+const ForgotPasswordRequests = require('./models/forgotPasswordRequests')
 
 const signupRoutes = require('./routes/signup')
 const loginRoutes = require('./routes/login');
@@ -24,7 +25,8 @@ app.use(premiumRoutes);
 app.use(forgotPasswordRoutes);
 
 User.hasOne(Expense);
-User.hasOne(Premium)
+User.hasOne(Premium);
+User.hasMany(ForgotPasswordRequests);
 
 
 sequelize

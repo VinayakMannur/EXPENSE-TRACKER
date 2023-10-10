@@ -1,0 +1,42 @@
+    // const transporter = await nodemailer.createTransport({
+    //     host: 'smtp.ethereal.email',
+    //     port: 587,
+    //     auth: {
+    //         user: 'kris.ebert@ethereal.email',
+    //         pass: 'FX77Dw7t4BE3Tq5ZQE'
+    //     }
+    // });
+
+    // const info = await transporter.sendMail({
+    //     from: '"Vinayak 👻" <foo@example.com>', // sender address
+    //     to: "bar@example.com, baz@example.com", // list of receivers
+    //     subject: "Hello ✔", // Subject line
+    //     text: "Hello world?", // plain text body
+    //     html: "<b>Hello world?</b>", // html body
+    // });
+
+    // console.log("Message sent: %s", info.messageId);
+
+    // const client = Sib.ApiClient.instance
+    // const apikey = client.authentications['api-key']
+    // apikey.apikey = "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"
+
+    // const tranEmailApi = new Sib.TransactionalEmailsApi()
+
+    // const sender = {
+    //     email: 'mannurvinayak20@gmail.com'
+    // }
+
+    // const receivers = [
+    //     {
+    //         email: 'vinayakvviet@gmail.com'
+    //     }
+    // ]
+
+    // tranEmailApi.sendTransacEmail({
+    //     sender,
+    //     to: receivers,
+    //     subject: 'Expense-Tracker OTP to reset your password',
+    //     textContent: `your OTP is 123`
+    // }).then(res => console.log(res))
+    //     .catch(err => console.log(err))

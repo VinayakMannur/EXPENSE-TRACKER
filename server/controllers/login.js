@@ -2,7 +2,7 @@ const User = require('../models/user');
 const bcrypt = require('bcrypt');
 var jwt = require('jsonwebtoken');
 
-const JWT_SECRET = //
+const JWT_SECRET = 'Vin@NOT$UREWHAT$GNG0N';
 
 exports.logIn = async (req, res, next) =>{
     const email = req.body.email;
