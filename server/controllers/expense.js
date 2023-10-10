@@ -1,32 +1,39 @@
 const Expense = require('../models/expense');
 const User = require('../models/user');
 const { Op } = require('sequelize');
+// const sequelize = require('../utils/database');
 
 exports.addExpense = async (req, res, next) => {
-    const userId = req.user.userId;
-    const {amount, category, description, date} = req.body;
+    // const t = await sequelize.transaction();
 
-    await Expense.create({
-        amount: amount,
-        category: category,
-        description: description,
-        date: date,
-        userId: userId
-    })
-        .then(result => {
-            res.json({expense: result, msg: "Added expense"})
+    try {
+
+        const userId = req.user.userId;
+        const {amount, category, description, date} = req.body;
+
+        const promise1 = await Expense.create({
+            amount: amount,
+            category: category,
+            description: description,
+            date: date,
+            userId: userId
         })
-        .catch(err => {
-            console.log(err);
+
+        const promise2 = await User.increment('totalexpense', {by : amount, where:{id: userId}})
+
+        Promise.all([promise1, promise2]).then(async()=>{
+            res.json({expense: promise1, msg: "Added expense"})
         })
-    
-    // await User.increment({age: 5}, { where: { id: 1 } })
-    const update = await User.increment('totalexpense', {by : amount, where:{id: userId}})
+
+    } catch (error) {
+        // await t.rollback();
+        console.log(error);
+    }
 }
 
 exports.getExpenses = async (req, res, next) =>{
     const userId = req.user.userId;
-    // console.log('user i=>>>>>>>>>>>>>>>>>>>>>',userId);
+
     let expenses
     
     if(req.body.frequency > 0){
@@ -41,13 +48,22 @@ exports.getExpenses = async (req, res, next) =>{
 }
 
 exports.deleteExpense = async (req, res) =>{
-    await Expense.destroy({where:{id: req.body.id}})
-        .then((result)=>{
+
+    try {
+        const userId = req.user.userId;
+        const amount = req.body.amount;
+
+        const promise1 = await Expense.destroy({where:{id: req.body.id}})
+        const promise2 = await User.decrement('totalexpense', {by : amount, where:{id: userId}})
+
+        Promise.all([promise1, promise2]).then(async()=>{
             res.json({msg: "Expense deleted"})
         })
-        .catch(err => {
-            console.log(err);
-        })
+
+    } catch (error) {
+        console.log(error);
+    }
+
 }
 
 exports.editExpense = async (req, res )=>{

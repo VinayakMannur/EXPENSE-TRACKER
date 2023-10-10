@@ -65,10 +65,15 @@ exports.updateStatus = async (req, res, next) => {
 exports.leaderBoard = async (req, res, next) => {
     try {
         const leaderboardOfUsers = await User.findAll({
-            attributes: ['id', 'name', 'expenseamount'],
-            order: [[('total_cost'), "DESC"]]
+            attributes: ['id', 'name', 'totalexpense'],
+            order: [['totalexpense', 'DESC']]
         })
-        res.json(leaderboardOfUsers)
+        const leaderboardData = [];
+        leaderboardOfUsers.forEach(singleuser => {
+            leaderboardData.push(singleuser.dataValues)
+        });
+        // console.log(leaderboardData);
+        res.json(leaderboardData)
     } catch (error) {
         console.log(error);
     }

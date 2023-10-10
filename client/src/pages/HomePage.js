@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { Select, Table} from 'antd';
-import { UnorderedListOutlined, PieChartOutlined, EditOutlined, DeleteOutlined,CloseOutlined} from '@ant-design/icons';
+import { Select, Table } from 'antd';
+import { UnorderedListOutlined, PieChartOutlined, EditOutlined, DeleteOutlined, CloseOutlined } from '@ant-design/icons';
 import axios from "axios";
 import useRazorpay from "react-razorpay";
 import moment from 'moment'
@@ -22,7 +22,7 @@ const HomePage = () => {
     const [success, setSuccess] = useState(false);
     const [showLeaderboard, setShowLeaderboard] = useState(false)
     const [leaderboardData, setLeaderboardData] = useState([])
- 
+
     const columns = [
         {
             title: "Date",
@@ -48,16 +48,16 @@ const HomePage = () => {
         {
             title: "Actions",
             key: 'action',
-            render: (text, record)=>(
+            render: (text, record) => (
                 <div className='d-flex'>
                     <button data-bs-toggle="modal" data-bs-target="#exampleModal" >
-                        <EditOutlined onClick={()=>{
+                        <EditOutlined onClick={() => {
                             editExpense(record)
-                        }}/>
+                        }} />
                     </button>
-                    <DeleteOutlined className='mx-2' onClick={()=>{
+                    <DeleteOutlined className='mx-2' onClick={() => {
                         deleteExpense(record)
-                    }}/>
+                    }} />
                 </div>
             )
         }
@@ -70,15 +70,15 @@ const HomePage = () => {
         },
         {
             title: "Total Expense",
-            dataIndex: 'total_cost'
+            dataIndex: 'totalexpense'
         },
         {
             title: "Actions",
             key: 'action',
-            render: (text, record)=>(
-                <CloseOutlined className='mx-2' onClick={()=>{
-                        setShowLeaderboard(false)
-                }}/>
+            render: (text, record) => (
+                <CloseOutlined className='mx-2' onClick={() => {
+                    setShowLeaderboard(false)
+                }} />
             )
         }
     ]
@@ -86,8 +86,8 @@ const HomePage = () => {
     const getExpenses = async () => {
         await axios.post('http://localhost:5000/get-expense', {
             frequency: frequency
-        },{
-            headers:{
+        }, {
+            headers: {
                 authToken: localStorage.getItem('authToken')
             }
         })
@@ -109,11 +109,12 @@ const HomePage = () => {
         getExpenses()
     }, [frequency])
 
-    const deleteExpense = async (record)  => {
+    const deleteExpense = async (record) => {
         await axios.post('http://localhost:5000/delete-expense', {
-            id: record.id
-        },{
-            headers:{
+            id: record.id,
+            amount: record.amount
+        }, {
+            headers: {
                 authToken: localStorage.getItem('authToken')
             }
         })
@@ -126,13 +127,13 @@ const HomePage = () => {
             })
     }
 
-    const editExpense1 = async(e)=>{
+    const editExpense1 = async (e) => {
         e.preventDefault()
         console.log(expenseEditId);
         const amount = document.getElementById('expenseAmount').value
         const category = document.getElementById('category').value
         const description = document.getElementById('description').value
-        const date = document.getElementById('date').value 
+        const date = document.getElementById('date').value
 
         await axios.post('http://localhost:5000/edit-expense', {
             id: expenseEditId,
@@ -140,8 +141,8 @@ const HomePage = () => {
             category: category,
             description: description,
             date: date
-        },{
-            headers:{
+        }, {
+            headers: {
                 authToken: localStorage.getItem('authToken')
             }
         })
@@ -153,7 +154,7 @@ const HomePage = () => {
 
     }
 
-    const editExpense = async (record) =>{
+    const editExpense = async (record) => {
         setEdit('edit')
         // console.log(record.id);
         setExpenseEditId(record.id)
@@ -176,8 +177,8 @@ const HomePage = () => {
             category: category,
             description: description,
             date: date
-        },{
-            headers:{
+        }, {
+            headers: {
                 authToken: localStorage.getItem('authToken')
             }
         })
@@ -189,9 +190,9 @@ const HomePage = () => {
 
     }
 
-    const buyPremium = async (e) =>{
-        const response = await axios.get('http://localhost:5000/buypremium',{
-            headers:{
+    const buyPremium = async (e) => {
+        const response = await axios.get('http://localhost:5000/buypremium', {
+            headers: {
                 authToken: localStorage.getItem('authToken')
             }
         })
@@ -199,60 +200,59 @@ const HomePage = () => {
         var options = {
             "key": response.data.key_id,
             "order_id": response.data.order.id,
-            "handler": async function(response){
-                await axios.post('http://localhost:5000/updatetransactionstatus',{
+            "handler": async function (response) {
+                await axios.post('http://localhost:5000/updatetransactionstatus', {
                     orderId: options.order_id,
                     paymentId: response.razorpay_payment_id,
                     status: "SUCCESS"
-                },{
-                    headers:{
+                }, {
+                    headers: {
                         authToken: localStorage.getItem('authToken')
                     }
                 })
-                .then((result)=>{
-                    // console.log(result);
-                    setSuccess(true)
-                    const user = JSON.parse(localStorage.getItem('user'))
-                    localStorage.removeItem('user');
-                    localStorage.setItem("user", JSON.stringify({ ...user, isPremium: 'true'}))
-                    // console.log('premium user');
-                    alert('Congrats!!! Welcome to premium family')
-                })
+                    .then((result) => {
+                        // console.log(result);
+                        setSuccess(true)
+                        const user = JSON.parse(localStorage.getItem('user'))
+                        localStorage.removeItem('user');
+                        localStorage.setItem("user", JSON.stringify({ ...user, isPremium: 'true' }))
+                        // console.log('premium user');
+                        alert('Congrats!!! Welcome to premium family')
+                    })
             }
         }
         const rpz1 = new Razorpay(options);
         rpz1.open();
         e.preventDefault();
 
-        rpz1.on('payment.failed',function(response){
-            axios.post('http://localhost:5000/updatetransactionstatus',{
+        rpz1.on('payment.failed', function (response) {
+            axios.post('http://localhost:5000/updatetransactionstatus', {
                 orderId: options.order_id,
                 paymentId: response.error.metadata.payment_id,
                 status: "FAILURE"
-            },{
-                headers:{
+            }, {
+                headers: {
                     authToken: localStorage.getItem('authToken')
                 }
             })
-                .then((result)=>{
+                .then((result) => {
                     alert('Something went wrong!!')
                 })
             // console.log(response.error.metadata.payment_id);
         })
     }
 
-    const getLeaderBoard = async (e) =>{
+    const getLeaderBoard = async (e) => {
         e.preventDefault()
-        
-        await axios.get('http://localhost:5000/leaderboard',{
-            headers:{
+
+        await axios.get('http://localhost:5000/leaderboard', {
+            headers: {
                 authToken: localStorage.getItem('authToken')
             }
-        }).then((leaderboardUsers)=>{
+        }).then((leaderboardUsers) => {
             console.log(leaderboardUsers)
             setLeaderboardData(leaderboardUsers.data)
             setShowLeaderboard(true)
-            
         })
 
     }
@@ -272,40 +272,40 @@ const HomePage = () => {
                         {/* {frequency === 'custom' && <RangePicker value={rangeDate} onChange={(values) => setRangeDate(values)} />} */}
                     </div>
                     <div className="giveMargin">
-                        <UnorderedListOutlined className={`mx-2 ${viewData === 'table'?'active-icon':'inactive-icon'}`} onClick={()=>setViewData('table')}/>
+                        <UnorderedListOutlined className={`mx-2 ${viewData === 'table' ? 'active-icon' : 'inactive-icon'}`} onClick={() => setViewData('table')} />
                     </div>
                     {success &&
-                        <PieChartOutlined className={`mx-2 ${viewData === 'analytics'?'active-icon':'inactive-icon'}`} onClick={()=>setViewData('analytics')}/>
+                        <PieChartOutlined className={`mx-2 ${viewData === 'analytics' ? 'active-icon' : 'inactive-icon'}`} onClick={() => setViewData('analytics')} />
                     }
                     <button className='btn btn-outline-success btn-sm' data-bs-toggle="modal" data-bs-target="#exampleModal">Add expense</button>
                     {!success && <button type='button' className='btn btn-success btn-sm' onClick={buyPremium}>
                         Buy Premium
-                    </button> 
+                    </button>
                     }
-                    {success && 
+                    {success &&
                         <button type='button' className='btn btn-outline-success btn-sm' onClick={getLeaderBoard}>Get leaderboard</button>
                     }
-                </div> 
+                </div>
                 <div className="content mt-2">
                     {!success &&
                         <div className='text-center'>
-                            To access all the features of the Expense Tracker. 
+                            To access all the features of the Expense Tracker.
                             <button type='button' className='btn btn-link' onClick={buyPremium}>
                                 Join Premium Family
                             </button>
                         </div>
-                    }      
-                    {viewData === 'table'? <Table columns={columns} dataSource={allExpenses} />:
-                        <Analytics allExpenses={allExpenses} frequency={frequency}/>
                     }
-                    {showLeaderboard && viewData === 'table' && <Table columns={colLeaderBoard} dataSource={leaderboardData} title={() => <h3>Leader Board</h3>}/>}
+                    {viewData === 'table' ? <Table columns={columns} dataSource={allExpenses} /> :
+                        <Analytics allExpenses={allExpenses} frequency={frequency} />
+                    }
+                    {showLeaderboard && viewData === 'table' && <Table columns={colLeaderBoard} dataSource={leaderboardData} title={() => <h3>Leader Board</h3>} />}
                 </div>
                 <div>
                     <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div className="modal-dialog">
                             <div className="modal-content">
                                 <div className="modal-header">
-                                    <h1 className="modal-title fs-5" id="exampleModalLabel">{edit === 'edit'?"Edit Expense":"Add Expense"}</h1>
+                                    <h1 className="modal-title fs-5" id="exampleModalLabel">{edit === 'edit' ? "Edit Expense" : "Add Expense"}</h1>
                                     <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div className="modal-body">
@@ -335,7 +335,7 @@ const HomePage = () => {
                                             <input type="date" className="form-control" id="date" required />
                                         </div>
                                         <div className="modal-footer p-1">
-                                            {edit === 'edit'? <button type="submit" onClick={editExpense1} className="btn btn-success btn-sm" data-bs-dismiss="modal" aria-label="Close">Update Expense</button>:
+                                            {edit === 'edit' ? <button type="submit" onClick={editExpense1} className="btn btn-success btn-sm" data-bs-dismiss="modal" aria-label="Close">Update Expense</button> :
                                                 <button type="submit" onClick={submitExpense} className="btn btn-success btn-sm" data-bs-dismiss="modal" aria-label="Close">Add Expense</button>
                                             }
                                         </div>
@@ -345,6 +345,7 @@ const HomePage = () => {
                         </div>
                     </div>
                 </div>
+                
             </div>
         </Layout>
     )
