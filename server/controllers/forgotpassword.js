@@ -22,7 +22,7 @@ exports.forgotPassword = async (req, res, next) => {
         let defaultClient = brevo.ApiClient.instance;
 
         let apiKey = defaultClient.authentications['api-key'];
-        apiKey.apiKey = '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';
+        apiKey.apiKey = '';
 
         let apiInstance = new brevo.TransactionalEmailsApi();
         let sendSmtpEmail = new brevo.SendSmtpEmail();
