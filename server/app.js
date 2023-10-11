@@ -6,13 +6,15 @@ const sequelize = require('./utils/database');
 const User = require('./models/user');
 const Expense = require('./models/expense');
 const Premium = require('./models/order')
-const ForgotPasswordRequests = require('./models/forgotPasswordRequests')
+const ForgotPasswordRequests = require('./models/forgotPasswordRequests');
+const Income = require('./models/income');
 
 const signupRoutes = require('./routes/signup')
 const loginRoutes = require('./routes/login');
 const expenseRoutes = require('./routes/expense');
 const premiumRoutes = require('./routes/premium')
 const forgotPasswordRoutes = require('./routes/forgotpassword')
+const incomeRoutes = require('./routes/income');
 
 const app = express();
 
@@ -23,8 +25,10 @@ app.use(loginRoutes);
 app.use(expenseRoutes);
 app.use(premiumRoutes);
 app.use(forgotPasswordRoutes);
+app.use(incomeRoutes);
 
 User.hasOne(Expense);
+User.hasOne(Income);
 User.hasOne(Premium);
 User.hasMany(ForgotPasswordRequests);
 

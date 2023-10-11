@@ -16,6 +16,10 @@ const User = sequelize.define('user',{
     totalexpense: {
         type: Sequelize.INTEGER,
         defaultValue: 0
+    },
+    totalincome :{
+        type: Sequelize.INTEGER,
+        defaultValue: 0
     }
 })
 

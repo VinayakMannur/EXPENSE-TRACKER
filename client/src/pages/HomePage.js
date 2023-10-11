@@ -15,6 +15,7 @@ const HomePage = () => {
     const [Razorpay] = useRazorpay();
 
     const [allExpenses, setAllExpenses] = useState([]);
+    const [allIncome, setAllIncome] = useState([]);
     const [frequency, setFrequency] = useState([]);
     const [viewData, setViewData] = useState('table');
     const [edit, setEdit] = useState('normal')
@@ -95,6 +96,30 @@ const HomePage = () => {
                 // console.log(result);
                 const reverseData = result.data
                 setAllExpenses(reverseData.reverse());
+                
+                // setAllExpenses(result.data);
+                console.log(reverseData.reverse());
+                const user = JSON.parse(localStorage.getItem('user'))
+                setSuccess(user.isPremium);
+                console.log(allExpenses);
+            })
+            .catch(err => {
+                console.log(err);
+            })
+    }
+
+    const getIncome = async () => {
+        await axios.post('http://localhost:5000/get-income', {
+            frequency: frequency
+        }, {
+            headers: {
+                authToken: localStorage.getItem('authToken')
+            }
+        })
+            .then(result => {
+                // console.log(result);
+                const reverseData = result.data
+                setAllIncome(reverseData.reverse());
                 // setAllExpenses(result.data);
                 console.log(reverseData.reverse());
                 const user = JSON.parse(localStorage.getItem('user'))
@@ -107,6 +132,7 @@ const HomePage = () => {
 
     useEffect(() => {
         getExpenses()
+        getIncome()
     }, [frequency])
 
     const deleteExpense = async (record) => {
@@ -187,7 +213,30 @@ const HomePage = () => {
                 getExpenses()
             })
             .catch(err => console.log(err))
+    }
 
+    const submitIncome = async (e) => {
+        e.preventDefault()
+        const amount = document.getElementById('incomeAmount').value;
+        const description = document.getElementById('incomeDescription').value;
+        const date = document.getElementById('incomeDate').value;
+
+        await axios.post('http://localhost:5000/add-income', {
+            amount: amount,
+            description: description,
+            date: date
+        }, {
+            headers: {
+                authToken: localStorage.getItem('authToken')
+            }
+        })
+            .then(result => {
+                // console.log(result);
+                alert(result.data.msg);
+                getIncome()
+                getExpenses()
+            })
+            .catch(err => console.log(err))
     }
 
     const buyPremium = async (e) => {
@@ -278,6 +327,9 @@ const HomePage = () => {
                         <PieChartOutlined className={`mx-2 ${viewData === 'analytics' ? 'active-icon' : 'inactive-icon'}`} onClick={() => setViewData('analytics')} />
                     }
                     <button className='btn btn-outline-success btn-sm' data-bs-toggle="modal" data-bs-target="#exampleModal">Add expense</button>
+                    {success &&
+                        <button className='btn btn-outline-success btn-sm' data-bs-toggle="modal" data-bs-target="#incomeModal">Add Income</button>
+                    }
                     {!success && <button type='button' className='btn btn-success btn-sm' onClick={buyPremium}>
                         Buy Premium
                     </button>
@@ -338,6 +390,41 @@ const HomePage = () => {
                                             {edit === 'edit' ? <button type="submit" onClick={editExpense1} className="btn btn-success btn-sm" data-bs-dismiss="modal" aria-label="Close">Update Expense</button> :
                                                 <button type="submit" onClick={submitExpense} className="btn btn-success btn-sm" data-bs-dismiss="modal" aria-label="Close">Add Expense</button>
                                             }
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div className="modal fade" id="incomeModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div className="modal-dialog">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    {/* <h1 className="modal-title fs-5" id="exampleModalLabel">{edit === 'edit' ? "Edit Expense" : "Add Expense"}</h1> */}
+                                    <h1 className="modal-title fs-5" id="exampleModalLabel">Add Income</h1>
+                                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div className="modal-body">
+                                    <form className="bg-white rounded-5 shadow-5-strong">
+                                        <div className="form-outline mb-2">
+                                            <label className="form-label text-black" htmlFor="incomeAmount">Amount</label>
+                                            <input type="number" id="incomeAmount" className="form-control" required />
+                                        </div>
+                                        <div className="form-outline mb-2">
+                                            <label className="form-label  text-black" htmlFor="incomeDescription">Description</label>
+                                            <input type="text" id="incomeDescription" className="form-control" required />
+                                        </div>
+                                        <div className="form-outline mb-2">
+                                            <label htmlFor="incomeDate">Date</label>
+                                            <input type="date" className="form-control" id="incomeDate" required />
+                                        </div>
+                                        <div className="modal-footer p-1">
+                                            {/* {edit === 'edit' ? <button type="submit" onClick={editExpense1} className="btn btn-success btn-sm" data-bs-dismiss="modal" aria-label="Close">Update Expense</button> :
+                                                <button type="submit" onClick={submitExpense} className="btn btn-success btn-sm" data-bs-dismiss="modal" aria-label="Close">Add Expense</button>
+                                            } */}
+                                            <button type="submit" onClick={submitIncome} className="btn btn-success btn-sm" data-bs-dismiss="modal" aria-label="Close">Add Income</button>
                                         </div>
                                     </form>
                                 </div>

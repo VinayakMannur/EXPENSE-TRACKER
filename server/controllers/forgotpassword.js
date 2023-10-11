@@ -7,7 +7,6 @@ const { v4: uuidv4 } = require('uuid');
 
 exports.forgotPassword = async (req, res, next) => {
 
-
     const emailId = req.body.email;
 
     const user = await User.findOne({ where: { email: req.body.email } })
@@ -52,15 +51,7 @@ exports.forgotPassword = async (req, res, next) => {
         }, function (error) {
             console.error(error);
         });
-
-
-
-
-
     }
-
-
-
 }
 
 exports.resetLink = async (req, res, next) =>{
