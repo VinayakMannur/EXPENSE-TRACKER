@@ -1,10 +1,11 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import moment from 'moment'
 import { Chart as ChartJS, ArcElement, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, } from 'chart.js';
 import { Bar, Doughnut } from 'react-chartjs-2';
 import { Table } from 'antd';
 import html2canvas from 'html2canvas';
 import { jsPDF } from "jspdf";
+import axios from "axios";
 
 ChartJS.register(ArcElement, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -12,7 +13,9 @@ const Analytics = ({ allExpenses, frequency }) => {
 
     const pdfRef = useRef();
 
-    console.log(allExpenses);
+    const [allIncome, setAllIncome] = useState([]);
+
+    // console.log(allExpenses);
 
     const categoryName = ['bills', 'shopping', 'food', 'grocery', 'invest', 'other'];
     const categoryWiseExpense = [];
@@ -21,6 +24,47 @@ const Analytics = ({ allExpenses, frequency }) => {
             .reduce((acc, expense) => acc + expense.amount, 0)
         return categoryWiseExpense.push(amount)
     })
+
+    const getIncome = async () => {
+        await axios.post('http://localhost:5000/get-income', {
+            frequency: frequency
+        }, {
+            headers: {
+                authToken: localStorage.getItem('authToken')
+            }
+        })
+            .then(result => {
+                console.log(result.data);
+                const reverseData = result.data
+                setAllIncome(reverseData.reverse());
+                // console.log(reverseData.reverse());
+            })
+            .catch(err => {
+                console.log(err);
+            })
+    }
+
+    const downloadTxtFile = async () => {
+        await axios.get('http://localhost:5000/download',{
+            headers: {
+                authToken: localStorage.getItem('authToken')
+            }
+        })
+            .then(result => {
+                // console.log(result.data.fileURL);
+                var a = document.createElement('a');
+                a.href = result.data.fileURL;
+                a.download = 'myexpense.csv'
+                a.click()
+            })
+            .catch(err => {
+                console.log(err);
+            })
+    }
+
+    useEffect(() => {
+        getIncome()
+    }, [])
 
     const totalExpenses = allExpenses.length;
 
@@ -253,6 +297,25 @@ const Analytics = ({ allExpenses, frequency }) => {
         }
     ]
 
+    const columnsIncome = [
+        {
+            title: "Date",
+            dataIndex: 'date',
+            key: 'date',
+            render: (text) => <span>{moment(text).format('YYYY-MM-DD')}</span>
+        },
+        {
+            title: "Amount",
+            dataIndex: 'amount',
+            key: 'amount'
+        },
+        {
+            title: "Description",
+            dataIndex: 'description',
+            key: 'description'
+        }
+    ]
+
     async function generatePDF() {
 
         const input = pdfRef.current;
@@ -274,6 +337,7 @@ const Analytics = ({ allExpenses, frequency }) => {
     }
 
     const totalExpenseAmount = allExpenses.reduce((acc, expense) => acc + expense.amount, 0)
+    const totalIncomeAmount = allIncome.reduce((acc, income) => acc + income.amount, 0)
 
     return (
         <>
@@ -310,17 +374,30 @@ const Analytics = ({ allExpenses, frequency }) => {
                                     }
                                 </div>
                             </div>
-                            <div class="container my-5">
-                                <div class="row my-5">
-                                    <div class="col text-center">
-                                        <button type='button' className='btn btn-success btn-sm my-5' onClick={generatePDF}>Download Report</button>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
-
                     </div>
+                    <h5 class="card-title text-center m-3">Your Expense</h5>
                     <Table columns={columns} dataSource={allExpenses} />
+                    <h5 class="card-title text-center m-3">Your Income</h5>
+                    <Table columns={columnsIncome} dataSource={allIncome} />
+                </div>
+                <h5 class="card-title mx-5 my-3">Summing up your Income & Expenses!</h5>
+                <div class="card mx-5" style={{ width: "18rem" }}>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Total Income : {totalIncomeAmount}</li>
+                        <li class="list-group-item">Total Expense : {totalExpenseAmount}</li>
+                    </ul>
+                    <div class="card-footer">
+                        Total Savings : {totalIncomeAmount - totalExpenseAmount}
+                    </div>
+                </div>
+                <div class="container my-5">
+                    <div class="row">
+                        <div class="col text-center">
+                            <button type='button' className='btn btn-success btn-sm' onClick={generatePDF}>Download Report</button>
+                            <button type='button' className='btn btn-success btn-sm mx-3' onClick={downloadTxtFile}>Download txt file</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </>

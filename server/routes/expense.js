@@ -14,4 +14,8 @@ router.post('/delete-expense', validator,expenseController.deleteExpense);
 
 router.post('/edit-expense', validator,expenseController.editExpense)
 
+router.get('/download', validator, expenseController.downloadReport);
+
+router.get('/getdownloadlinks', validator , expenseController.getDownloadLinks);
+
 module.exports = router;

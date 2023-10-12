@@ -1,4 +1,5 @@
 const Income = require('../models/income');
+const Expense = require('../models/expense')
 const User = require('../models/user');
 const { Op } = require('sequelize');
 
@@ -40,4 +41,5 @@ exports.getIncome = async (req, res, next) =>{
         income = await Income.findAll({where: {userId: userId}})
     }
     res.json(income)
+
 }

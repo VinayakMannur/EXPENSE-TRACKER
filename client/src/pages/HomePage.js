@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Select, Table } from 'antd';
-import { UnorderedListOutlined, PieChartOutlined, EditOutlined, DeleteOutlined, CloseOutlined } from '@ant-design/icons';
+import { UnorderedListOutlined, PieChartOutlined, EditOutlined, DeleteOutlined, CloseOutlined, DownloadOutlined } from '@ant-design/icons';
 import axios from "axios";
 import useRazorpay from "react-razorpay";
 import moment from 'moment'
@@ -15,7 +15,6 @@ const HomePage = () => {
     const [Razorpay] = useRazorpay();
 
     const [allExpenses, setAllExpenses] = useState([]);
-    const [allIncome, setAllIncome] = useState([]);
     const [frequency, setFrequency] = useState([]);
     const [viewData, setViewData] = useState('table');
     const [edit, setEdit] = useState('normal')
@@ -23,6 +22,8 @@ const HomePage = () => {
     const [success, setSuccess] = useState(false);
     const [showLeaderboard, setShowLeaderboard] = useState(false)
     const [leaderboardData, setLeaderboardData] = useState([])
+    const [showReportLink, setShowReportLink] = useState(false)
+    const [reportLinkData, setReportLinkData] = useState([])
 
     const columns = [
         {
@@ -84,6 +85,37 @@ const HomePage = () => {
         }
     ]
 
+    const reportLinks = [
+        {
+            title: "Date",
+            dataIndex: 'date',
+            render: (text) => <span>{moment(text).format('MMMM Do YYYY, h:mm:ss a')}</span>,
+            width: 250,
+        },
+        {
+            title: "Copy paste the URL on Google or Click on Download Icon",
+            dataIndex: 'URL',
+            render: (text) => <a>{text}</a>,
+            ellipsis: true,
+        },
+        {
+            title: "Actions",
+            key: 'action',
+            render: (text, record) => (
+                <div className='d-flex'>
+                    <DownloadOutlined  onClick={() => {
+                        downloadReport(record)
+                    }} />
+                    <CloseOutlined className='mx-5' onClick={() => {
+                        setShowReportLink(false)
+                    }} />
+                </div>
+
+            ),
+            width: 250,
+        }
+    ]
+
     const getExpenses = async () => {
         await axios.post('http://localhost:5000/get-expense', {
             frequency: frequency
@@ -96,7 +128,6 @@ const HomePage = () => {
                 // console.log(result);
                 const reverseData = result.data
                 setAllExpenses(reverseData.reverse());
-                
                 // setAllExpenses(result.data);
                 console.log(reverseData.reverse());
                 const user = JSON.parse(localStorage.getItem('user'))
@@ -108,31 +139,8 @@ const HomePage = () => {
             })
     }
 
-    const getIncome = async () => {
-        await axios.post('http://localhost:5000/get-income', {
-            frequency: frequency
-        }, {
-            headers: {
-                authToken: localStorage.getItem('authToken')
-            }
-        })
-            .then(result => {
-                // console.log(result);
-                const reverseData = result.data
-                setAllIncome(reverseData.reverse());
-                // setAllExpenses(result.data);
-                console.log(reverseData.reverse());
-                const user = JSON.parse(localStorage.getItem('user'))
-                setSuccess(user.isPremium);
-            })
-            .catch(err => {
-                console.log(err);
-            })
-    }
-
     useEffect(() => {
         getExpenses()
-        getIncome()
     }, [frequency])
 
     const deleteExpense = async (record) => {
@@ -233,7 +241,6 @@ const HomePage = () => {
             .then(result => {
                 // console.log(result);
                 alert(result.data.msg);
-                getIncome()
                 getExpenses()
             })
             .catch(err => console.log(err))
@@ -306,6 +313,28 @@ const HomePage = () => {
 
     }
 
+    const getPreviosDownloads = async (e) => {
+        e.preventDefault()
+
+        await axios.get('http://localhost:5000/getdownloadlinks', {
+            headers: {
+                authToken: localStorage.getItem('authToken')
+            }
+        }).then((reportData) => {
+            console.log(reportData)
+            setReportLinkData(reportData.data)
+            setShowReportLink(true)
+        })
+    }
+
+    const downloadReport = async (record) => {
+        console.log(record);
+        var a = document.createElement('a');
+        a.href = record.URL;
+        a.download = 'myexpense.csv'
+        a.click()
+    }
+
     return (
         <Layout>
             <div className="container">
@@ -351,6 +380,12 @@ const HomePage = () => {
                         <Analytics allExpenses={allExpenses} frequency={frequency} />
                     }
                     {showLeaderboard && viewData === 'table' && <Table columns={colLeaderBoard} dataSource={leaderboardData} title={() => <h3>Leader Board</h3>} />}
+                    {success &&
+                        <div class=" my-5 float-end">
+                            <button type='button' className='btn btn-outline-success btn-sm' onClick={getPreviosDownloads}>Get Previous Downloads Links</button>
+                        </div>
+                    }
+                    {showReportLink && <Table columns={reportLinks} dataSource={reportLinkData} title={() => <h3>Previous Downloads</h3>} />}
                 </div>
                 <div>
                     <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -432,8 +467,9 @@ const HomePage = () => {
                         </div>
                     </div>
                 </div>
-                
+
             </div>
+
         </Layout>
     )
 }

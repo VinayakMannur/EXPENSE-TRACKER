@@ -15,6 +15,7 @@ const expenseRoutes = require('./routes/expense');
 const premiumRoutes = require('./routes/premium')
 const forgotPasswordRoutes = require('./routes/forgotpassword')
 const incomeRoutes = require('./routes/income');
+const Download = require('./models/download');
 
 const app = express();
 
@@ -30,6 +31,7 @@ app.use(incomeRoutes);
 User.hasOne(Expense);
 User.hasOne(Income);
 User.hasOne(Premium);
+User.hasOne(Download);
 User.hasMany(ForgotPasswordRequests);
 
 
