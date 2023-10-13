@@ -10,6 +10,7 @@ import {
     BarsOutlined,
     DownloadOutlined,
     CloudDownloadOutlined,
+    TableOutlined,
 } from "@ant-design/icons";
 import axios from "axios";
 import useRazorpay from "react-razorpay";
@@ -37,6 +38,7 @@ const HomePage = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [pages, setPages] = useState(1);
     const [loading, setLoading] = useState(false);
+    const [noItems, setNoItems] = useState(10);
 
     const columns = [
         {
@@ -147,7 +149,7 @@ const HomePage = () => {
         setLoading(true);
         await axios
             .post(
-                `http://localhost:5000/get-expense?page=${pages}`,
+                `http://localhost:5000/get-expense?page=${pages}&items=${noItems}`,
                 {
                     frequency: frequency,
                 },
@@ -160,7 +162,7 @@ const HomePage = () => {
             .then((result) => {
                 // console.log(result);
                 const reverseData = result.data.expenses;
-                setTotalPages(result.data.pages)
+                setTotalPages((result.data.pages)+10)
                 setAllExpenses(reverseData.reverse());
                 const user = JSON.parse(localStorage.getItem("user"));
                 setSuccess(user.isPremium);
@@ -173,7 +175,7 @@ const HomePage = () => {
 
     useEffect(() => {
         getExpenses();
-    }, [frequency]);
+    }, [frequency, noItems, pages ]);
 
     const deleteExpense = async (record) => {
         await axios
@@ -418,11 +420,12 @@ const HomePage = () => {
             });
     };
 
-    function getItem(label, key, icon) {
+    function getItem(label, key, icon, children) {
         return {
             key,
             icon,
             label,
+            children,
         };
     }
 
@@ -433,6 +436,13 @@ const HomePage = () => {
         getItem("Get Previous Download Links", "4", <CloudDownloadOutlined />),
         getItem("Download CSV File", "5", <DownloadOutlined />),
         getItem("Download Report", "6", <DownloadOutlined />),
+        getItem('No.of Items per Page', 'sub1', <TableOutlined />, [
+            getItem('10 Items', '10'),
+            getItem('15 Items', '15'),
+            getItem('20 Items', '20'),
+            getItem('50 Items', '50'),
+            getItem('100 Items', '100'),
+        ]),
     ];
 
     const {
@@ -457,6 +467,12 @@ const HomePage = () => {
                 downloadTxtFile();
             }
         }
+        if(e.key > 6){
+            // localStorage.setItem("items", JSON.parse(e.key))
+            setNoItems(e.key)
+            getExpenses()
+
+        }
     };
 
     return (
@@ -474,7 +490,7 @@ const HomePage = () => {
                         }}
                         width={260}
                     >
-                        <Menu theme="dark" onClick={onClick} mode="inline" items={items} />
+                        <Menu theme="dark" onClick={onClick}  mode="inline" items={items} />
                     </Sider>
                     <Layout
                         className="site-layout"
@@ -557,9 +573,9 @@ const HomePage = () => {
                                                 columns={columns}
                                                 dataSource={allExpenses}
                                                 pagination={{
-                                                    pageSize: 10,
-                                                    total: totalPages+10,
-                                                    onChange:(page)=>{
+                                                    pageSize: noItems,
+                                                    total: totalPages ,
+                                                    onChange: (page) => {
                                                         setPages(page)
                                                         getExpenses()
                                                     }
