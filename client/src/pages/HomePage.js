@@ -436,7 +436,7 @@ const HomePage = () => {
         getItem("Get Previous Download Links", "4", <CloudDownloadOutlined />),
         getItem("Download CSV File", "5", <DownloadOutlined />),
         getItem("Download Report", "6", <DownloadOutlined />),
-        getItem('No.of Items per Page', 'sub1', <TableOutlined />, [
+        getItem('No.of Expenses per Page', 'sub1', <TableOutlined />, [
             getItem('10 Items', '10'),
             getItem('15 Items', '15'),
             getItem('20 Items', '20'),

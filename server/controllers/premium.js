@@ -1,16 +1,15 @@
+require('dotenv').config()
 const Razorpay = require('razorpay');
 const Order = require('../models/order');
 const User = require('../models/user');
-const sequelize = require('../utils/database');
-const Expense = require('../models/expense')
 
-exports.buyPremium = async (req, res, next) => {
-    const userId = req.user.userId
-
+exports.buyPremium = async (req, res) => {
     try {
+        const {userId} = req.user;
+
         var rzp = new Razorpay({
-            key_id: "rzp_test_1M7fCK6jDwGZbY",
-            key_secret: "hfJ6ZClJY3CiCbaGF9optK2d",
+            key_id: process.env.KEY_ID,
+            key_secret: process.env.KEY_SECRET,
         });
 
         const amount = 5000;
@@ -28,23 +27,23 @@ exports.buyPremium = async (req, res, next) => {
                 .then((result) => {
                     // console.log(result);
                     return res.status(201).send({ order, key_id: rzp.key_id })
-                    // console.log(order);
                 })
                 .catch(err => console.log(err))
         })
-
     } catch (error) {
         console.log(error);
+        return res.status(500).send({ msg: "Internal Server Error!!" })
     }
 }
 
-exports.updateStatus = async (req, res, next) => {
+exports.updateStatus = async (req, res) => {
     try {
         const { orderId, paymentId, status } = req.body;
-        const userId = req.user.userId
+        const {userId} = req.user;
 
         const order = await Order.findOne({ where: { orderId: orderId } })
         const promise1 = order.update({ paymentId: paymentId, status: status })
+
         if(status ===  "SUCCESS"){
             const promise2 = User.update({ isPremium: true },{ where: { id: userId }})
             Promise.all([promise1, promise2]).then(()=>{
@@ -62,7 +61,7 @@ exports.updateStatus = async (req, res, next) => {
     }
 }
 
-exports.leaderBoard = async (req, res, next) => {
+exports.leaderBoard = async (req, res) => {
     try {
         const leaderboardOfUsers = await User.findAll({
             attributes: ['id', 'name', 'totalexpense'],
@@ -72,9 +71,10 @@ exports.leaderBoard = async (req, res, next) => {
         leaderboardOfUsers.forEach(singleuser => {
             leaderboardData.push(singleuser.dataValues)
         });
-        // console.log(leaderboardData);
-        res.json(leaderboardData)
+        return res.status(201).send({leaderboardData})
+
     } catch (error) {
         console.log(error);
+        return res.status(500).send({ msg: "Internal Server Error!!" })
     }
 }
