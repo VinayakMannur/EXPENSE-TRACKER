@@ -44,23 +44,7 @@ const Analytics = ({ allExpenses, frequency }) => {
             })
     }
 
-    const downloadTxtFile = async () => {
-        await axios.get('http://localhost:5000/download',{
-            headers: {
-                authToken: localStorage.getItem('authToken')
-            }
-        })
-            .then(result => {
-                // console.log(result.data.fileURL);
-                var a = document.createElement('a');
-                a.href = result.data.fileURL;
-                a.download = 'myexpense.csv'
-                a.click()
-            })
-            .catch(err => {
-                console.log(err);
-            })
-    }
+    
 
     useEffect(() => {
         getIncome()
@@ -347,7 +331,7 @@ const Analytics = ({ allExpenses, frequency }) => {
                     {frequency.length === 0 && <h6 className='text-center mt-3'>Your overall expenses</h6>}
                 </div>
                 <div class="card-body">
-                    <h6 class="card-title">Your max Expense was {Math.max(...categoryWiseExpense)}</h6>
+                    <h6 class="card-title text-start">Your max Expense was {Math.max(...categoryWiseExpense)}</h6>
                     <div className="row mt-3">
                         <div className="col">
                             <div className="card mb-3 ">
@@ -381,7 +365,7 @@ const Analytics = ({ allExpenses, frequency }) => {
                     <h5 class="card-title text-center m-3">Your Income</h5>
                     <Table columns={columnsIncome} dataSource={allIncome} />
                 </div>
-                <h5 class="card-title mx-5 my-3">Summing up your Income & Expenses!</h5>
+                <h5 class="card-title mx-5 my-3 text-start">Summing up your Income & Expenses!</h5>
                 <div class="card mx-5" style={{ width: "18rem" }}>
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item">Total Income : {totalIncomeAmount}</li>
@@ -394,8 +378,7 @@ const Analytics = ({ allExpenses, frequency }) => {
                 <div class="container my-5">
                     <div class="row">
                         <div class="col text-center">
-                            <button type='button' className='btn btn-success btn-sm' onClick={generatePDF}>Download Report</button>
-                            <button type='button' className='btn btn-success btn-sm mx-3' onClick={downloadTxtFile}>Download txt file</button>
+                            <button type='button' className='btn btn-success btn-sm' onClick={generatePDF}>Download PDF Report</button>
                         </div>
                     </div>
                 </div>

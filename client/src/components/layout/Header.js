@@ -28,7 +28,7 @@ const Navbar = () => {
 
     return (
         <>
-        <nav className="navbar bg-dark navbar-expand-lg px-5 py-0 bg-body-tertiary" data-bs-theme="dark">
+        <nav id='sticky' className="navbar bg-dark  navbar-expand-lg px-5 py-0 bg-body-tertiary" data-bs-theme="dark">
             <div className="container-fluid my-2">
                 <a className="navbar-brand ml-5" href="/">
                      Expense-Tracker

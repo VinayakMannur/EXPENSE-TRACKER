@@ -35,18 +35,36 @@ exports.addExpense = async (req, res, next) => {
 
 exports.getExpenses = async (req, res, next) => {
     const userId = req.user.userId;
-
+    const page = req.query.page;
+    console.log(page);
     let expenses
+    let pages
 
     if (req.body.frequency > 0) {
+
+        pages = await Expense.count({ where: { userId: userId, date: { [Op.between]: [endDate, startDate] } } })
+        
         const startDate = new Date();
         const endDate = new Date(startDate.getTime() - `${req.body.frequency}` * 24 * 60 * 60 * 1000);
-        expenses = await Expense.findAll({ where: { userId: userId, date: { [Op.between]: [endDate, startDate] } } })
+        expenses = await Expense.findAll({
+            offset: (page -1)*10,
+            limit: 10,
+            where: { 
+                userId: userId, 
+                date: { [Op.between]: [endDate, startDate] } 
+            } 
+        })
     }
     else {
-        expenses = await Expense.findAll({ where: { userId: userId } })
+        pages = await Expense.count({ where: { userId: userId } })
+        expenses = await Expense.findAll({ 
+            offset: (page -1)*10,
+            limit: 10,
+            where: { userId: userId } 
+        })
+        
     }
-    res.json(expenses)
+    res.json({ expenses: expenses, pages: Math.round(pages/10)+1 })
 }
 
 exports.deleteExpense = async (req, res) => {
@@ -109,9 +127,9 @@ exports.downloadReport = async (req, res) => {
     }
 }
 
-exports.getDownloadLinks = async (req, res) =>{
+exports.getDownloadLinks = async (req, res) => {
     try {
-        const report = await Download.findAll({where: {userId: req.user.userId}})
+        const report = await Download.findAll({ where: { userId: req.user.userId } })
         res.json(report)
     } catch (error) {
         console.log(error);
