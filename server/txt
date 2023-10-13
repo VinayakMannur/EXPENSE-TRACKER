@@ -3,7 +3,7 @@
     //     port: 587,
     //     auth: {
     //         user: 'kris.ebert@ethereal.email',
-    //         pass: 'FX77Dw7t4BE3Tq5ZQE'
+    //         pass: ''
     //     }
     // });
 
@@ -19,7 +19,7 @@
 
     // const client = Sib.ApiClient.instance
     // const apikey = client.authentications['api-key']
-    // apikey.apikey = "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"
+    // apikey.apikey = ""
 
     // const tranEmailApi = new Sib.TransactionalEmailsApi()
 

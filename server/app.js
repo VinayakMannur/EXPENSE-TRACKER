@@ -1,6 +1,13 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const helmet = require('helmet')
+const compression = require('compression')
+const morgan = require('morgan')
+const fs = require('fs')
+const path = require('path');
+
+require('dotenv').config()
 
 const sequelize = require('./utils/database');
 
@@ -21,8 +28,13 @@ const reportRoutes = require('./routes/report')
 
 const app = express();
 
+const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), {flags: 'a'})
+
 app.use(bodyParser.json({extended: false}));
 app.use(cors());
+app.use(helmet());
+app.use(compression())
+app.use(morgan('combined', {stream: accessLogStream}))
 
 app.use(signupRoutes);
 app.use(loginRoutes);
@@ -42,7 +54,7 @@ sequelize
     // .sync({force:true})
     .sync()
     .then(res =>{
-        app.listen(5000,()=>{
+        app.listen(process.env.PORT || 5000,()=>{
             console.log('Avengers assemble at PORT 5000');
         })
     });
