@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import axios from "axios";
 import { useNavigate } from 'react-router';
-import '../css/Loginsign.css'
 
 const Updatedpassword = () => {
 
@@ -45,7 +44,7 @@ const Updatedpassword = () => {
                                 </div>
                                 <div className="form-outline mb-4">
                                     <label className="form-label" htmlFor="loginPassword">Password</label>
-                                    <input type="password" id="loginPassword" className="form-control" required />
+                                    <input type="password" id="loginPassword" className="form-control" autoComplete="on" required />
                                 </div>
                                 <button type="submit" onClick={updatedPassword} className="btn btn-sm btn-primary btn-block">Submit</button> :
                             </form>

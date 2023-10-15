@@ -9,6 +9,18 @@
 
 }
 
+#intro {
+  background-image: url('./alexander-mils-lCPhGxs7pww-unsplash.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 92.9vh;
+}
+
+#introDiv{
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+
 .filters{
   display: flex;
   align-items: center;

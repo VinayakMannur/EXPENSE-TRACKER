@@ -2,7 +2,7 @@ import React,{useState, useEffect} from 'react'
 import { UserOutlined } from '@ant-design/icons';
 import { Avatar} from 'antd';
 import {Outlet, useNavigate } from "react-router-dom";
-import memeber from '../images/membership.png'
+import memeber from '../assets/membership.png'
 
 
 const Navbar = () => {
@@ -37,11 +37,6 @@ const Navbar = () => {
                     <img src={memeber} alt="Premium User" width="35" height="35" className="d-inline-block align-text-top mx-2" />
                 }
                 <div className="collapse navbar-collapse d-flex ml-5" id="navbarNav">
-                    {/* <ul className="navbar-nav">
-                        <li className="nav-item">
-                            <a className="nav-link active" aria-current="page" href="/">Home</a>
-                        </li>
-                    </ul> */}
                 </div>
                     <li className='me-2'>
                         <Avatar style={{ backgroundColor: '#87d068' }} icon={<UserOutlined />} /> 

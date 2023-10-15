@@ -3,7 +3,6 @@ import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
 import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router';
-import '../css/Loginsign.css'
 
 const Login = () => {
 
@@ -54,7 +53,7 @@ const Login = () => {
                                 </div>
                                 <div className="form-outline mb-4">
                                     <label className="form-label" htmlFor="loginPassword">Password</label>
-                                    <input type="password" id="loginPassword" className="form-control" required />
+                                    <input type="password" id="loginPassword" className="form-control" autoComplete="on" required />
                                 </div>
                                 <div className="row mb-4">
                                     <div className="col d-flex justify-content-center">

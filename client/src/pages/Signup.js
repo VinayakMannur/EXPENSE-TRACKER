@@ -22,11 +22,14 @@ const Signup = () => {
         .then(responce => {
           // console.log(responce);
           alert(responce.data.msg)
-          if (responce.status === 200) {
+          if (responce.status === 201) {
             navigate("/login")
           }
         })
         .catch(err => console.log(err))
+    }
+    else {
+      alert("Enter all details")
     }
   }
 
@@ -54,7 +57,7 @@ const Signup = () => {
                 </div>
                 <div className="form-outline mb-4">
                   <label className="form-label" htmlFor="signUpPassword">Password</label>
-                  <input type="password" id="signUpPassword" className="form-control" required />
+                  <input type="password" id="signUpPassword" className="form-control" autoComplete="on" required />
                 </div>
                 <button type="submit" onClick={signUpBtn} className="btn btn-primary btn-block">Sign Up</button>
               </form>

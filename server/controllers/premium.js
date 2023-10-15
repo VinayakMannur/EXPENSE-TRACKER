@@ -18,7 +18,7 @@ exports.buyPremium = async (req, res) => {
             if (err) {
                 console.log(err);
             }
-            console.log(order);
+            // console.log(order);
             Order.create({
                 orderId: order.id,
                 status: 'PENDING',
@@ -71,7 +71,7 @@ exports.leaderBoard = async (req, res) => {
         leaderboardOfUsers.forEach(singleuser => {
             leaderboardData.push(singleuser.dataValues)
         });
-        return res.status(201).send({leaderboardData})
+        return res.status(201).send({leaderboardData: leaderboardData})
 
     } catch (error) {
         console.log(error);

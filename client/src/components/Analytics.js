@@ -13,9 +13,9 @@ const Analytics = ({ allExpenses, frequency }) => {
 
     const pdfRef = useRef();
 
-    const [allIncome, setAllIncome] = useState([]);
+    const totalExpenses = allExpenses.length;
 
-    // console.log(allExpenses);
+    const [allIncome, setAllIncome] = useState([]);
 
     const categoryName = ['bills', 'shopping', 'food', 'grocery', 'invest', 'other'];
     const categoryWiseExpense = [];
@@ -34,23 +34,19 @@ const Analytics = ({ allExpenses, frequency }) => {
             }
         })
             .then(result => {
-                console.log(result.data);
-                const reverseData = result.data
+                // console.log(result.data);
+                const reverseData = result.data.income
                 setAllIncome(reverseData.reverse());
-                // console.log(reverseData.reverse());
             })
             .catch(err => {
                 console.log(err);
             })
     }
 
-    
-
     useEffect(() => {
         getIncome()
+         // eslint-disable-next-line  
     }, [])
-
-    const totalExpenses = allExpenses.length;
 
     const data = {
         labels: ['bills', 'shopping', 'food', 'grocery', 'invest', 'other'],
@@ -154,9 +150,7 @@ const Analytics = ({ allExpenses, frequency }) => {
         const endDate = new Date(startDate.getTime() - `${frequency - 1}` * 24 * 60 * 60 * 1000);
         const sDate = moment(startDate).format('YYYY-MM-DD')
         const eDate = moment(endDate).format('YYYY-MM-DD')
-        // console.log(sDate, eDate);
         const monthList = getDaysArray(new Date(eDate), new Date(sDate));
-        // console.log(monthList);
         const obj = {}
         monthList.map((dat) => {
             const amt = allExpenses.filter((exp) => moment(exp.date).format('YYYY-MM-DD') === dat)
@@ -325,13 +319,13 @@ const Analytics = ({ allExpenses, frequency }) => {
 
     return (
         <>
-            <div class="card" ref={pdfRef} >
-                <div class="card-header">
+            <div className="card" ref={pdfRef} >
+                <div className="card-header">
                     {frequency.length > 0 && <h6 className='text-center mt-3'>Your Expense of Last {frequency} Days</h6>}
                     {frequency.length === 0 && <h6 className='text-center mt-3'>Your overall expenses</h6>}
                 </div>
-                <div class="card-body">
-                    <h6 class="card-title text-start">Your max Expense was {Math.max(...categoryWiseExpense)}</h6>
+                <div className="card-body">
+                    <h6 className="card-title text-start">Your max Expense was {Math.max(...categoryWiseExpense)}</h6>
                     <div className="row mt-3">
                         <div className="col">
                             <div className="card mb-3 ">
@@ -360,24 +354,24 @@ const Analytics = ({ allExpenses, frequency }) => {
                             </div>
                         </div>
                     </div>
-                    <h5 class="card-title text-center m-3">Your Expense</h5>
-                    <Table columns={columns} dataSource={allExpenses} />
-                    <h5 class="card-title text-center m-3">Your Income</h5>
-                    <Table columns={columnsIncome} dataSource={allIncome} />
+                    <h5 className="card-title text-center m-3">Your Expense</h5>
+                    <Table columns={columns} dataSource={allExpenses} rowKey="id"/>
+                    <h5 className="card-title text-center m-3">Your Income</h5>
+                    <Table columns={columnsIncome} dataSource={allIncome} rowKey="id"/>
                 </div>
-                <h5 class="card-title mx-5 my-3 text-start">Summing up your Income & Expenses!</h5>
-                <div class="card mx-5" style={{ width: "18rem" }}>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">Total Income : {totalIncomeAmount}</li>
-                        <li class="list-group-item">Total Expense : {totalExpenseAmount}</li>
+                <h5 className="card-title mx-5 my-3 text-start">Summing up your Income & Expenses!</h5>
+                <div className="card mx-5" style={{ width: "18rem" }}>
+                    <ul className="list-group list-group-flush">
+                        <li className="list-group-item">Total Income : {totalIncomeAmount}</li>
+                        <li className="list-group-item">Total Expense : {totalExpenseAmount}</li>
                     </ul>
-                    <div class="card-footer">
+                    <div className="card-footer">
                         Total Savings : {totalIncomeAmount - totalExpenseAmount}
                     </div>
                 </div>
-                <div class="container my-5">
-                    <div class="row">
-                        <div class="col text-center">
+                <div className="container my-5">
+                    <div className="row">
+                        <div className="col text-center">
                             <button type='button' className='btn btn-success btn-sm' onClick={generatePDF}>Download PDF Report</button>
                         </div>
                     </div>
@@ -388,4 +382,3 @@ const Analytics = ({ allExpenses, frequency }) => {
 }
 
 export default Analytics
-

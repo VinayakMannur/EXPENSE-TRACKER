@@ -15,8 +15,8 @@ import {
 import axios from "axios";
 import useRazorpay from "react-razorpay";
 import moment from "moment";
-import Layout1 from "../components/layout/Layout";
-import Analytics from "../components/layout/Analytics";
+import Layout1 from "../components/Layout";
+import Analytics from "../components/Analytics";
 import { Link } from "react-router-dom";
 
 import { Layout, Menu, theme } from "antd";
@@ -67,7 +67,11 @@ const HomePage = () => {
             key: "action",
             render: (text, record) => (
                 <div className="d-flex">
-                    <button data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    <button
+                        id="editExp"
+                        data-bs-toggle="modal"
+                        data-bs-target="#exampleModal"
+                    >
                         <EditOutlined
                             onClick={() => {
                                 editExpense(record);
@@ -118,7 +122,7 @@ const HomePage = () => {
             width: 250,
         },
         {
-            title: "Copy paste the URL on Google or Click on Download Icon",
+            title: "Click on the link or click on download icon to download",
             dataIndex: "URL",
             render: (text) => <Link>{text}</Link>,
             ellipsis: true,
@@ -162,7 +166,7 @@ const HomePage = () => {
             .then((result) => {
                 // console.log(result);
                 const reverseData = result.data.expenses;
-                setTotalPages((result.data.pages)+10)
+                setTotalPages(result.data.pages + 10);
                 setAllExpenses(reverseData.reverse());
                 const user = JSON.parse(localStorage.getItem("user"));
                 setSuccess(user.isPremium);
@@ -175,7 +179,8 @@ const HomePage = () => {
 
     useEffect(() => {
         getExpenses();
-    }, [frequency, noItems, pages ]);
+        // eslint-disable-next-line  
+    }, [frequency, noItems, pages]) 
 
     const deleteExpense = async (record) => {
         await axios
@@ -202,7 +207,6 @@ const HomePage = () => {
 
     const editExpense1 = async (e) => {
         e.preventDefault();
-        console.log(expenseEditId);
         const amount = document.getElementById("expenseAmount").value;
         const category = document.getElementById("category").value;
         const description = document.getElementById("description").value;
@@ -226,6 +230,7 @@ const HomePage = () => {
             )
             .then((result) => {
                 alert(result.data.msg);
+                setEdit("normal");
                 getExpenses();
             })
             .catch((err) => console.log(err));
@@ -233,14 +238,21 @@ const HomePage = () => {
 
     const editExpense = async (record) => {
         setEdit("edit");
-        // console.log(record.id);
         setExpenseEditId(record.id);
-        const date = record.date.split(" ");
+        const date = record.date
         document.getElementById("expenseAmount").value = record.amount;
         document.getElementById("category").value = record.category;
         document.getElementById("description").value = record.description;
-        document.getElementById("date").value = date[0];
+        document.getElementById("date").value = date.slice(0,10);
     };
+
+    function closeEditLayout() {
+        document.getElementById("expenseAmount").value = '';
+        document.getElementById("category").value = '';
+        document.getElementById("description").value = '';
+        document.getElementById("date").value = '';
+        setEdit('normal')
+    }
 
     const submitExpense = async (e) => {
         e.preventDefault();
@@ -266,6 +278,7 @@ const HomePage = () => {
             )
             .then((result) => {
                 alert(result.data.msg);
+                closeEditLayout()
                 getExpenses();
             })
             .catch((err) => console.log(err));
@@ -293,6 +306,9 @@ const HomePage = () => {
             )
             .then((result) => {
                 // console.log(result);
+                document.getElementById("incomeAmount").value = '';
+                document.getElementById("incomeDescription").value = '';
+                document.getElementById("incomeDate").value = '';
                 alert(result.data.msg);
                 getExpenses();
             })
@@ -305,7 +321,6 @@ const HomePage = () => {
                 authToken: localStorage.getItem("authToken"),
             },
         });
-        console.log(response);
         var options = {
             key: response.data.key_id,
             order_id: response.data.order.id,
@@ -333,7 +348,6 @@ const HomePage = () => {
                             "user",
                             JSON.stringify({ ...user, isPremium: "true" })
                         );
-                        // console.log('premium user');
                         alert("Congrats!!! Welcome to premium family");
                     });
             },
@@ -360,7 +374,6 @@ const HomePage = () => {
                 .then((result) => {
                     alert("Something went wrong!!");
                 });
-            // console.log(response.error.metadata.payment_id);
         });
     };
 
@@ -372,8 +385,8 @@ const HomePage = () => {
                 },
             })
             .then((leaderboardUsers) => {
-                console.log(leaderboardUsers);
-                setLeaderboardData(leaderboardUsers.data);
+                // console.log(leaderboardUsers);
+                setLeaderboardData(leaderboardUsers.data.leaderboardData);
                 setShowLeaderboard(true);
             });
     };
@@ -386,15 +399,13 @@ const HomePage = () => {
                 },
             })
             .then((reportData) => {
-                console.log(reportData);
-                const reverseData = reportData.data;
+                const reverseData = reportData.data.report;
                 setReportLinkData(reverseData.reverse());
                 setShowReportLink(true);
             });
     };
 
     const downloadReport = async (record) => {
-        console.log(record);
         var a = document.createElement("a");
         a.href = record.URL;
         a.download = "myexpense.csv";
@@ -409,7 +420,6 @@ const HomePage = () => {
                 },
             })
             .then((result) => {
-                // console.log(result.data.fileURL);
                 var a = document.createElement("a");
                 a.href = result.data.fileURL;
                 a.download = "myexpense.csv";
@@ -436,12 +446,12 @@ const HomePage = () => {
         getItem("Get Previous Download Links", "4", <CloudDownloadOutlined />),
         getItem("Download CSV File", "5", <DownloadOutlined />),
         getItem("Download Report", "6", <DownloadOutlined />),
-        getItem('No.of Expenses per Page', 'sub1', <TableOutlined />, [
-            getItem('10 Items', '10'),
-            getItem('15 Items', '15'),
-            getItem('20 Items', '20'),
-            getItem('50 Items', '50'),
-            getItem('100 Items', '100'),
+        getItem("No.of Expenses per Page", "sub1", <TableOutlined />, [
+            getItem("10 Items", "10"),
+            getItem("15 Items", "15"),
+            getItem("20 Items", "20"),
+            getItem("50 Items", "50"),
+            getItem("100 Items", "100"),
         ]),
     ];
 
@@ -450,7 +460,6 @@ const HomePage = () => {
     } = theme.useToken();
 
     const onClick = async (e) => {
-        // console.log(e.key);
         if (e.key === "1") {
             const addExp = document.getElementById("addExp");
             addExp.click();
@@ -467,11 +476,9 @@ const HomePage = () => {
                 downloadTxtFile();
             }
         }
-        if(e.key > 6){
-            // localStorage.setItem("items", JSON.parse(e.key))
-            setNoItems(e.key)
-            getExpenses()
-
+        if (e.key > 6) {
+            setNoItems(e.key);
+            getExpenses();
         }
     };
 
@@ -490,7 +497,7 @@ const HomePage = () => {
                         }}
                         width={260}
                     >
-                        <Menu theme="dark" onClick={onClick}  mode="inline" items={items} />
+                        <Menu theme="dark" onClick={onClick} mode="inline" items={items} />
                     </Sider>
                     <Layout
                         className="site-layout"
@@ -514,7 +521,6 @@ const HomePage = () => {
                                                 <Select.Option value="365">Last 1 Year</Select.Option>
                                                 <Select.Option value="custom">Custom</Select.Option>
                                             </Select>
-                                            {/* {frequency === 'custom' && <RangePicker value={rangeDate} onChange={(values) => setRangeDate(values)} />} */}
                                         </div>
                                         <div className="giveMargin">
                                             <UnorderedListOutlined
@@ -572,13 +578,14 @@ const HomePage = () => {
                                                 loading={loading}
                                                 columns={columns}
                                                 dataSource={allExpenses}
+                                                rowKey="id"
                                                 pagination={{
                                                     pageSize: noItems,
-                                                    total: totalPages ,
+                                                    total: totalPages,
                                                     onChange: (page) => {
-                                                        setPages(page)
-                                                        getExpenses()
-                                                    }
+                                                        setPages(page);
+                                                        getExpenses();
+                                                    },
                                                 }}
                                             />
                                         ) : (
@@ -591,6 +598,7 @@ const HomePage = () => {
                                             <Table
                                                 columns={colLeaderBoard}
                                                 dataSource={leaderboardData}
+                                                rowKey="id"
                                                 title={() => <h3>Leader Board</h3>}
                                             />
                                         )}
@@ -599,6 +607,7 @@ const HomePage = () => {
                                             <Table
                                                 columns={reportLinks}
                                                 dataSource={reportLinkData}
+                                                rowKey="id"
                                                 title={() => <h3>Previous Downloads</h3>}
                                             />
                                         )}
@@ -625,6 +634,7 @@ const HomePage = () => {
                                                             className="btn-close"
                                                             data-bs-dismiss="modal"
                                                             aria-label="Close"
+                                                            onClick={closeEditLayout}
                                                         ></button>
                                                     </div>
                                                     <div className="modal-body">
