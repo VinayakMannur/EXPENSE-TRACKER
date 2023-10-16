@@ -1,8 +1,9 @@
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
 var jwt = require('jsonwebtoken');
+require('dotenv').config()
 
-const JWT_SECRET = 'Vin@NOT$UREWHAT$GNG0N';
+const JWT_SECRET = process.env.TOCKEN_SECRET;
 
 exports.logIn = async (req, res) => {
     try {
