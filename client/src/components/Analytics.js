@@ -298,7 +298,7 @@ const Analytics = ({ allExpenses, frequency }) => {
 
         const input = pdfRef.current;
 
-        await html2canvas(input, { height: 1500 }).then((canvas) => {
+        await html2canvas(input, { height: 1500 }).then(async (canvas) => {
 
             const imgData = canvas.toDataURL('image/png');
             const pdf = new jsPDF('p', 'mm', 'a4', true);
@@ -310,7 +310,39 @@ const Analytics = ({ allExpenses, frequency }) => {
             const imgX = (pdfWidth - imgWidth * ratio)
             const imgY = 10;
             pdf.addImage(imgData, 'PNG', imgX, imgY, imgWidth * ratio, imgHeight * ratio);
-            pdf.save("ExpenseTracker.pdf")
+
+            // Convert the PDF content to a Uint8Array
+            const pdfContent = pdf.output('arraybuffer');
+        
+            // Create a Blob from the Uint8Array
+            const pdfBlob = new Blob([pdfContent], { type: 'application/pdf' });
+        
+            // Create a File from the Blob
+            const pdfFile = new File([pdfBlob], 'expense_report.pdf', { type: 'application/pdf' });
+        
+            const formData = new FormData();
+            formData.append('pdfFile', pdfFile);
+
+            // console.log(formData.get('pdfFile'));
+
+            await axios.post("http://localhost:5000/download", formData ,{
+                headers: {
+                    authToken: localStorage.getItem("authToken"),
+                    " Content-Type ": 'multipart/form-data',
+                },
+            })
+            .then((result) => {
+                var a = document.createElement("a");
+                a.href = result.data.fileURL;
+                a.target = "_blank"
+                // a.download = "myexpenses.csv";
+                a.click();
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+
+            // pdf.save("ExpenseTracker.pdf")
         })
     }
 

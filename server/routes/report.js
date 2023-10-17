@@ -6,7 +6,7 @@ const reportController = require('../controllers/report');
 
 const router  = express.Router();
 
-router.get('/download', validator, reportController.downloadReport);
+router.post('/download', validator, reportController.downloadReport);
 
 router.get('/getdownloadlinks', validator , reportController.getDownloadLinks);
 

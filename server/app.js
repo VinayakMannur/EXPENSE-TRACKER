@@ -6,6 +6,7 @@ const compression = require('compression')
 const morgan = require('morgan')
 const fs = require('fs')
 const path = require('path');
+const fileUpload = require('express-fileupload')
 
 require('dotenv').config()
 
@@ -35,6 +36,21 @@ app.use(cors());
 app.use(helmet());
 app.use(compression())
 app.use(morgan('combined', {stream: accessLogStream}))
+app.use(fileUpload())
+
+const _dirname = path.dirname("ExpenseTracker")
+const reactPath = path.join(_dirname,'../client/build')
+
+app.use(express.static(reactPath))
+app.get('/',(req,res)=>{
+    res.sendFile(
+        path.join(__dirname,"../client/build/index.html"),(err)=>{
+            if(err){
+                res.status(500).send(err)
+            }
+        }
+    )
+})
 
 app.use(signupRoutes);
 app.use(loginRoutes);

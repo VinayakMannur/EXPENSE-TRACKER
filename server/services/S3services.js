@@ -1,7 +1,11 @@
 const AWS = require('aws-sdk');
 require('dotenv').config()
 
-const  uploadToS3 = (data, filename) => {
+const uploadToS3 = async (data, filename) => {
+
+    const blob = new Blob([data], { type: 'application/pdf' });
+    const buffer = await blob.arrayBuffer();
+    const bufferData = Buffer.from(buffer);
 
     let s3bucket = new AWS.S3({
         accessKeyId: process.env.IAM_USER_KEY,
@@ -9,9 +13,10 @@ const  uploadToS3 = (data, filename) => {
     })
 
     var params = {
-        Bucket: process.env.BUCKET_NAME,
+        Bucket: process.env.BUCKET_NAME,    
         Key: filename,
-        Body: data,
+        Body: bufferData,
+        ContentType: 'application/pdf',
         ACL: 'public-read'
     }
 

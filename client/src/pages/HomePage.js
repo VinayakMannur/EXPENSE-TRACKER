@@ -412,24 +412,6 @@ const HomePage = () => {
         a.click();
     };
 
-    const downloadTxtFile = async () => {
-        await axios
-            .get("http://localhost:5000/download", {
-                headers: {
-                    authToken: localStorage.getItem("authToken"),
-                },
-            })
-            .then((result) => {
-                var a = document.createElement("a");
-                a.href = result.data.fileURL;
-                a.download = "myexpense.csv";
-                a.click();
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    };
-
     function getItem(label, key, icon, children) {
         return {
             key,
@@ -444,7 +426,6 @@ const HomePage = () => {
         getItem("Add Income", "2", <FileAddTwoTone />),
         getItem("Get Leaderboard", "3", <BarsOutlined />),
         getItem("Get Previous Download Links", "4", <CloudDownloadOutlined />),
-        getItem("Download CSV File", "5", <DownloadOutlined />),
         getItem("Download Report", "6", <DownloadOutlined />),
         getItem("No.of Expenses per Page", "sub1", <TableOutlined />, [
             getItem("10 Items", "10"),
@@ -472,8 +453,6 @@ const HomePage = () => {
                 getLeaderBoard();
             } else if (e.key === "4") {
                 getPreviosDownloads();
-            } else if (e.key === "5") {
-                downloadTxtFile();
             }
         }
         if (e.key > 6) {

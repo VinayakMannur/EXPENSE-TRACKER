@@ -1,15 +1,16 @@
-const Expense = require('../models/expense');
-const Download = require('../models/download')
+const Download = require('../models/download');
 const S3Services = require('../services/S3services')
 
 exports.downloadReport = async (req, res) => {
     try {
         const {userId} = req.user;
+        const formData = req.files.pdfFile;
+
         const date = new Date()
-        let expenses = await Expense.findAll({ where: { userId: userId } })
-        const stringifiedExpense = JSON.stringify(expenses);
         const filename = `Expense${userId}/${date}.txt`;
-        const fileURL = await S3Services.uploadToS3(stringifiedExpense, filename);
+
+        const fileURL = await S3Services.uploadToS3(formData.data, filename);
+
         await Download.create({
             URL: fileURL,
             date: date,
