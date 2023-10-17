@@ -408,7 +408,8 @@ const HomePage = () => {
     const downloadReport = async (record) => {
         var a = document.createElement("a");
         a.href = record.URL;
-        a.download = "myexpense.csv";
+        a.target = "_blank"
+        // a.download = "myexpense.csv";
         a.click();
     };
 
