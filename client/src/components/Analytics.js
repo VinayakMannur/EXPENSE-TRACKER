@@ -26,7 +26,7 @@ const Analytics = ({ allExpenses, frequency }) => {
     })
 
     const getIncome = async () => {
-        await axios.post('http://localhost:5000/get-income', {
+        await axios.post('http://54.221.64.90:5000/get-income', {
             frequency: frequency
         }, {
             headers: {
@@ -325,7 +325,7 @@ const Analytics = ({ allExpenses, frequency }) => {
 
             // console.log(formData.get('pdfFile'));
 
-            await axios.post("http://localhost:5000/download", formData ,{
+            await axios.post("http://54.221.64.90:5000/download", formData ,{
                 headers: {
                     authToken: localStorage.getItem("authToken"),
                     " Content-Type ": 'multipart/form-data',

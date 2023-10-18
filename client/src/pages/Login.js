@@ -15,7 +15,7 @@ const Login = () => {
         const password = document.getElementById('loginPassword').value;
         // const checked = document.getElementById('loginRemember').checked;
 
-        await axios.post('http://localhost:5000/login', {
+        await axios.post('http://54.221.64.90:5000/login', {
             email: email,
             password: password
         })

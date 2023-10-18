@@ -16,7 +16,7 @@ exports.forgotPassword = async (req, res) => {
         }
         else {
             const uniqueId = uuidv4()
-            const URL = `http://localhost:5000/password/forgotpassword/${uniqueId}`
+            const URL = `http://54.221.64.90:5000/password/forgotpassword/${uniqueId}`
 
             let defaultClient = brevo.ApiClient.instance;
 
@@ -52,7 +52,7 @@ exports.forgotPassword = async (req, res) => {
 }
 
 exports.resetLink = async (req, res) => {
-    res.redirect('http://localhost:3000/updatepassword')
+    res.redirect('http://54.221.64.90:3000/updatepassword')
 }
 
 exports.updatePassword = async (req, res) => {

@@ -153,7 +153,7 @@ const HomePage = () => {
         setLoading(true);
         await axios
             .post(
-                `http://localhost:5000/get-expense?page=${pages}&items=${noItems}`,
+                `http://54.221.64.90:5000/get-expense?page=${pages}&items=${noItems}`,
                 {
                     frequency: frequency,
                 },
@@ -185,7 +185,7 @@ const HomePage = () => {
     const deleteExpense = async (record) => {
         await axios
             .post(
-                "http://localhost:5000/delete-expense",
+                "http://54.221.64.90:5000/delete-expense",
                 {
                     id: record.id,
                     amount: record.amount,
@@ -214,7 +214,7 @@ const HomePage = () => {
 
         await axios
             .post(
-                "http://localhost:5000/edit-expense",
+                "http://54.221.64.90:5000/edit-expense",
                 {
                     id: expenseEditId,
                     amount: amount,
@@ -263,7 +263,7 @@ const HomePage = () => {
 
         await axios
             .post(
-                "http://localhost:5000/add-expense",
+                "http://54.221.64.90:5000/add-expense",
                 {
                     amount: amount,
                     category: category,
@@ -292,7 +292,7 @@ const HomePage = () => {
 
         await axios
             .post(
-                "http://localhost:5000/add-income",
+                "http://54.221.64.90:5000/add-income",
                 {
                     amount: amount,
                     description: description,
@@ -316,7 +316,7 @@ const HomePage = () => {
     };
 
     const buyPremium = async (e) => {
-        const response = await axios.get("http://localhost:5000/buypremium", {
+        const response = await axios.get("http://54.221.64.90:5000/buypremium", {
             headers: {
                 authToken: localStorage.getItem("authToken"),
             },
@@ -327,7 +327,7 @@ const HomePage = () => {
             handler: async function (response) {
                 await axios
                     .post(
-                        "http://localhost:5000/updatetransactionstatus",
+                        "http://54.221.64.90:5000/updatetransactionstatus",
                         {
                             orderId: options.order_id,
                             paymentId: response.razorpay_payment_id,
@@ -359,7 +359,7 @@ const HomePage = () => {
         rpz1.on("payment.failed", function (response) {
             axios
                 .post(
-                    "http://localhost:5000/updatetransactionstatus",
+                    "http://54.221.64.90:5000/updatetransactionstatus",
                     {
                         orderId: options.order_id,
                         paymentId: response.error.metadata.payment_id,
@@ -379,7 +379,7 @@ const HomePage = () => {
 
     const getLeaderBoard = async () => {
         await axios
-            .get("http://localhost:5000/leaderboard", {
+            .get("http://54.221.64.90:5000/leaderboard", {
                 headers: {
                     authToken: localStorage.getItem("authToken"),
                 },
@@ -393,7 +393,7 @@ const HomePage = () => {
 
     const getPreviosDownloads = async () => {
         await axios
-            .get("http://localhost:5000/getdownloadlinks", {
+            .get("http://54.221.64.90:5000/getdownloadlinks", {
                 headers: {
                     authToken: localStorage.getItem("authToken"),
                 },

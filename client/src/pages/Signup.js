@@ -14,7 +14,7 @@ const Signup = () => {
     const password = document.getElementById('signUpPassword').value;
 
     if ((email && name && password) !== '') {
-      await axios.post('http://localhost:5000/signup', {
+      await axios.post('http://54.221.64.90:5000/signup', {
         email: email,
         name: name,
         password: password
