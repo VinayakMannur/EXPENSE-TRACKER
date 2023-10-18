@@ -33,7 +33,10 @@ const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'),
 
 app.use(bodyParser.json({extended: false}));
 app.use(cors());
-app.use(helmet());
+app.use(helmet({
+    contentSecurityPolicy: false,
+  })
+);
 app.use(compression())
 app.use(morgan('combined', {stream: accessLogStream}))
 app.use(fileUpload())
@@ -42,6 +45,7 @@ const _dirname = path.dirname("ExpenseTracker")
 const reactPath = path.join(_dirname,'../client/build')
 
 app.use(express.static(reactPath))
+
 app.get('/',(req,res)=>{
     res.sendFile(
         path.join(__dirname,"../client/build/index.html"),(err)=>{
