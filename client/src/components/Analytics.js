@@ -46,7 +46,7 @@ const Analytics = ({ allExpenses, frequency }) => {
     useEffect(() => {
         getIncome()
          // eslint-disable-next-line  
-    }, [])
+    }, [frequency])
 
     const data = {
         labels: ['bills', 'shopping', 'food', 'grocery', 'invest', 'other'],
