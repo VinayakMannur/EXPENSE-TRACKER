@@ -46,6 +46,16 @@ const reactPath = path.join(_dirname,'../client/build')
 
 app.use(express.static(reactPath))
 
+app.get('/updatepassword',(req,res)=>{
+    res.sendFile(
+        path.join(__dirname,"../client/build/index.html"),(err)=>{
+            if(err){
+                res.status(500).send(err)
+            }
+        }
+    )
+})
+
 app.get('/',(req,res)=>{
     res.sendFile(
         path.join(__dirname,"../client/build/index.html"),(err)=>{
