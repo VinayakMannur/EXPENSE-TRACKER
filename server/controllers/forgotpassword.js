@@ -52,7 +52,7 @@ exports.forgotPassword = async (req, res) => {
 }
 
 exports.resetLink = async (req, res) => {
-    res.redirect('http://54.221.64.90:5000/updatepassword')
+    res.redirect('http://54.221.64.90/updatepassword')
 }
 
 exports.updatePassword = async (req, res) => {
