@@ -2,14 +2,15 @@ const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 
-const downloadSchema = new Schema({
-  URL: {
+const premiumSchema = new Schema({
+  paymentId: {
     type: String,
-    required: true,
   },
-  date: {
-    type: Date,
-    required: true,
+  orderId: {
+    type: String,
+  },
+  status: {
+    type: String,
   },
   userId: {
     type: Schema.Types.ObjectId,
@@ -18,28 +19,22 @@ const downloadSchema = new Schema({
   },
 });
 
-module.exports = mongoose.model("Download", downloadSchema);
-
+module.exports = mongoose.model("Premium", premiumSchema);
 
 // const Sequelize = require('sequelize');
 
 // const sequelize = require('../utils/database');
 
-// const Download  = sequelize.define('download',{
+// const Order = sequelize.define('order',{
 //     id:{
 //         type: Sequelize.INTEGER,
 //         autoIncrement: true,
 //         allowNull: false,
 //         primaryKey: true
 //     },
-//     URL:{
-//         type: Sequelize.STRING,
-//         allowNull: false
-//     },
-//     date:{
-//         type: Sequelize.DATE,
-//         allowNull: false
-//     }
+//     paymentId: Sequelize.STRING,
+//     orderId: Sequelize.STRING,
+//     status: Sequelize.STRING
 // })
 
-// module.exports = Download;
+// module.exports = Order;

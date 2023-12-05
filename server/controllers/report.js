@@ -11,11 +11,12 @@ exports.downloadReport = async (req, res) => {
 
         const fileURL = await S3Services.uploadToS3(formData.data, filename);
 
-        await Download.create({
+        const download = new Download({
             URL: fileURL,
             date: date,
             userId: userId
         })
+        download.save()
         return res.status(200).send({ fileURL })
     } catch (error) {
         console.log(error);
@@ -25,7 +26,7 @@ exports.downloadReport = async (req, res) => {
 
 exports.getDownloadLinks = async (req, res) => {
     try {
-        const report = await Download.findAll({ where: { userId: req.user.userId } })
+        const report = await Download.find({ userId: req.user.userId  })
         return res.status(200).send({report})
     } catch (error) {
         console.log(error);

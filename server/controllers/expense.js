@@ -1,106 +1,104 @@
-const Expense = require('../models/expense');
-const User = require('../models/user');
-const { Op } = require('sequelize');
-// const sequelize = require('../utils/database');
+const Expense = require("../models/expense");
+const User = require("../models/user");
 
 exports.addExpense = async (req, res) => {
-    // const t = await sequelize.transaction();
-    try {
-        const userId = req.user.userId;
-        const { amount, category, description, date } = req.body;
+  // const t = await sequelize.transaction();
+  try {
+    const userId = req.user.userId;
+    const { amount, category, description, date } = req.body;
 
-        const promise1 = await Expense.create({
-            amount: amount,
-            category: category,
-            description: description,
-            date: date,
-            userId: userId
-        })
+    const newExpense = new Expense({
+      amount: amount,
+      category: category,
+      description: description,
+      date: date,
+      userId: userId,
+    });
+    newExpense.save();
 
-        const promise2 = await User.increment('totalexpense', { by: amount, where: { id: userId } })
+    await User.findByIdAndUpdate(userId, { $inc: { totalexpense: amount } });
 
-        Promise.all([promise1, promise2]).then(async () => {
-            res.status(200).send({ expense: promise1, msg: "Added expense" })
-        })
-
-    } catch (error) {
-        // await t.rollback();
-        console.log(error);
-        return res.status(500).send({ msg: "Internal Server Error!!" })
-    }
-}
+    res.status(200).send({ msg: "Added expense" });
+  } catch (error) {
+    // await t.rollback();
+    console.log(error);
+    return res.status(500).send({ msg: "Internal Server Error!!" });
+  }
+};
 
 exports.getExpenses = async (req, res) => {
-    try {
-        const userId = req.user.userId;
-        const { page, items } = req.query;
-        let expenses
-        let pages
+  try {
+    const userId = req.user.userId;
+    const { page, items } = req.query;
 
-        if (req.body.frequency > 0) {
-            const startDate = new Date();
-            const endDate = new Date(startDate.getTime() - `${req.body.frequency}` * 24 * 60 * 60 * 1000);
-            pages = await Expense.count({ where: { userId: userId, date: { [Op.between]: [endDate, startDate] } } })
-            expenses = await Expense.findAll({
-                offset: (page - 1) * 10,
-                limit: parseInt(items),
-                where: {
-                    userId: userId,
-                    date: { [Op.between]: [endDate, startDate] }
-                }
-            })
-        }
-        else {
-            pages = await Expense.count({ where: { userId: userId } })
-            expenses = await Expense.findAll({
-                offset: (page - 1) * 10,
-                limit: parseInt(items),
-                where: { userId: userId }
-            })
-        }
-        Promise.all([pages, expenses]).then(async () => {
-            return res.status(200).send({ expenses: expenses, pages: Math.round(pages / 10) + 1 })
-        })
-    } catch (error) {
-        console.log(error);
-        return res.status(500).send({ msg: "Internal Server Error!!" })
+    const startDate = new Date();
+    let dateFilter = { userId: userId };
+
+    if (req.body.frequency > 0) {
+      const endDate = new Date(
+        startDate.getTime() - `${req.body.frequency}` * 24 * 60 * 60 * 1000
+      );
+      dateFilter.date = { $gte: endDate, $lte: startDate };
     }
-}
+
+    const pages = await Expense.countDocuments(dateFilter);
+
+    const expenses = await Expense.find(dateFilter)
+      .skip((page - 1) * parseInt(items))
+      .limit(parseInt(items));
+
+    // console.log("???????????", expenses, pages);
+    return res
+      .status(200)
+      .send({ expenses: expenses, pages: Math.round(pages / 10) + 1 });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({ msg: "Internal Server Error!!" });
+  }
+};
 
 exports.deleteExpense = async (req, res) => {
-    try {
-        const { userId } = req.user;
-        const { amount } = req.body;
+  try {
+    const { userId } = req.user;
+    const { amount, _id } = req.body;
 
-        const promise1 = await Expense.destroy({ where: { id: req.body.id } })
-        const promise2 = await User.decrement('totalexpense', { by: amount, where: { id: userId } })
+    const filter = {_id: _id, userId: userId}
+    const [deleted] = await Promise.all([
+        Expense.deleteOne(filter),
+        User.updateOne(
+            {_id: userId},
+            {$inc: {totalexpense: -amount}}
+        )
+    ])
 
-        Promise.all([promise1, promise2]).then(async () => {
-            return res.status(200).send({ msg: "Expense deleted" })
-        })
-    } catch (error) {
-        console.log(error);
-        return res.status(500).send({ msg: "Internal Server Error!!" })
-    }
-}
+    return res.status(200).send({ msg: "Expense deleted" });
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({ msg: "Internal Server Error!!" });
+  }
+};
 
 exports.editExpense = async (req, res) => {
-    try {
-        const userId = req.user.userId;
-        const { id, amount, category, description, date } = req.body;
+  try {
+    const userId = req.user.userId;
+    const { id, amount, category, description, date } = req.body;
 
-        const editExp = await Expense.update({
-            amount: amount,
-            category: category,
-            description: description,
-            date: date,
-            userId: userId
-        }, {
-            where: { id: id }
-        })
-        return res.status(200).send({ msg: "Updated Expense!!" })
-    } catch (error) {
-        console.log(error);
-        return res.status(500).send({ msg: "Internal Server Error!!" })
-    }
-}
+    const filter = { _id: id, userId: userId };
+    const update = {
+      $set: {
+        amount: amount,
+        category: category,
+        description: description,
+        date: date,
+      },
+    };
+
+    const editedExpense = await Expense.findOneAndUpdate( filter, update);
+
+    return res.status(200).send({ msg: "Updated Expense!!" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({ msg: "Internal Server Error!!" });
+  }
+};

@@ -9,24 +9,24 @@ exports.logIn = async (req, res) => {
     try {
         const {email,password} = req.body;
 
-        const user = await User.findAll({ where: { email: email } });
+        const user = await User.findOne({ email: email });
         let result = false;
 
-        if (user.length > 0) {
-            result = await bcrypt.compare(password, user[0].dataValues.password)
+        if (user) {
+            result = await bcrypt.compare(password, user.password)
         }
 
-        if (user[0] === undefined) {
+        if (user === null) {
             return res.status(404).send({ msg: "User doesnt Exists!!" });
         }
-        else if (user[0].dataValues.email === email && result) {
+        else if (user.email === email && result) {
             const data = {
                 user: {
-                    userId: user[0].dataValues.id
+                    userId: user._id
                 }
             }
             const authToken = jwt.sign(data, JWT_SECRET)
-            return res.status(200).send({ authToken: authToken, user: user[0].dataValues, msg: "Login Successfull !!" });
+            return res.status(200).send({ authToken: authToken, user: user, msg: "Login Successfull !!" });
         }
         else {
             return res.status(401).send({ msg: "Email Password doesnt match !!" });

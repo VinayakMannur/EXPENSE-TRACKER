@@ -15,13 +15,13 @@ const Login = () => {
         const password = document.getElementById('loginPassword').value;
         // const checked = document.getElementById('loginRemember').checked;
 
-        await axios.post('http://54.221.64.90:5000/login', {
+        await axios.post('http://localhost:5000/login', {
             email: email,
             password: password
         })
             .then(responce => {
                 localStorage.setItem("authToken", responce.data.authToken)
-                localStorage.setItem("user", JSON.stringify({ ...responce.data.user, password: '', id:'', createdAt:'',updatedAt:''}))
+                localStorage.setItem("user", JSON.stringify({ ...responce.data.user, password: '', _id:'',}))
                 alert(responce.data.msg);
                 navigate("/home")
             })

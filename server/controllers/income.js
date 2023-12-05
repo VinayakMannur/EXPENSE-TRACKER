@@ -7,18 +7,16 @@ exports.addIncome = async (req, res) => {
         const userId = req.user.userId;
         const { amount, description, date } = req.body;
 
-        const promise1 = await Income.create({
+        const newIncome = new Income({
             amount: amount,
             description: description,
             date: date,
             userId: userId
         })
+        newIncome.save()
 
-        const promise2 = await User.increment('totalincome', { by: amount, where: { id: userId } })
-
-        Promise.all([promise1, promise2]).then(async () => {
-            return res.status(200).send({ expense: promise1, msg: "Added income" })
-        })
+        await User.findByIdAndUpdate(userId, { $inc: { totalincome: amount } });
+        return res.status(200).send({  msg: "Added income" })
 
     } catch (error) {
         console.log(error);
@@ -30,16 +28,16 @@ exports.getIncome = async (req, res) => {
     try {
         const {userId} = req.user;
         const {frequency} = req.body;
-        let income
+
+        const startDate = new Date();
+        let dateFilter = { userId: userId };
 
         if (frequency > 0) {
-            const startDate = new Date();
             const endDate = new Date(startDate.getTime() - `${frequency}` * 24 * 60 * 60 * 1000);
-            income = await Income.findAll({ where: { userId: userId, date: { [Op.between]: [endDate, startDate] } } })
+            dateFilter.date = { $gte: endDate, $lte: startDate };
         }
-        else {
-            income = await Income.findAll({ where: { userId: userId } })
-        }
+        
+        const income = await Income.find(dateFilter)
         return res.status(200).send({income})
     } catch (error) {
         console.log(error);
