@@ -29,14 +29,14 @@ exports.addExpense = async (req, res) => {
 exports.getExpenses = async (req, res) => {
   try {
     const userId = req.user.userId;
-    const { page, items } = req.query;
+    const { page, items, frequency } = req.query;
 
     const startDate = new Date();
     let dateFilter = { userId: userId };
 
-    if (req.body.frequency > 0) {
+    if (frequency > 0) {
       const endDate = new Date(
-        startDate.getTime() - `${req.body.frequency}` * 24 * 60 * 60 * 1000
+        startDate.getTime() - `${frequency}` * 24 * 60 * 60 * 1000
       );
       dateFilter.date = { $gte: endDate, $lte: startDate };
     }
@@ -60,14 +60,21 @@ exports.getExpenses = async (req, res) => {
 exports.deleteExpense = async (req, res) => {
   try {
     const { userId } = req.user;
-    const { amount, _id } = req.body;
+    const id = req.params.id;
 
-    const filter = {_id: _id, userId: userId}
+    const expenseToDelete = await Expense.findOne({_id: id, userId});
+    if (!expenseToDelete) {
+      return res.status(500).send({ msg: "Expense not found" });
+    }
+
+    const amount = expenseToDelete.amount;
+
+    const filter = {_id: id, userId: userId}
     const [deleted] = await Promise.all([
         Expense.deleteOne(filter),
         User.updateOne(
-            {_id: userId},
-            {$inc: {totalexpense: -amount}}
+          {_id: userId},
+          {$inc: {totalexpense: -amount}}
         )
     ])
 
@@ -82,7 +89,8 @@ exports.deleteExpense = async (req, res) => {
 exports.editExpense = async (req, res) => {
   try {
     const userId = req.user.userId;
-    const { id, amount, category, description, date } = req.body;
+    const id = req.params.id;
+    const { amount, category, description, date } = req.body;
 
     const filter = { _id: id, userId: userId };
     const update = {
@@ -94,7 +102,7 @@ exports.editExpense = async (req, res) => {
       },
     };
 
-    const editedExpense = await Expense.findOneAndUpdate( filter, update);
+    await Expense.findOneAndUpdate( filter, update);
 
     return res.status(200).send({ msg: "Updated Expense!!" });
   } catch (error) {

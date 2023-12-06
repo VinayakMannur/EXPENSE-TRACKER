@@ -26,9 +26,8 @@ const Analytics = ({ allExpenses, frequency }) => {
     })
 
     const getIncome = async () => {
-        await axios.post('http://localhost:5000/get-income', {
-            frequency: frequency
-        }, {
+        await axios.get(`http://localhost:5000/get-income?frequency=${frequency}`,
+        {
             headers: {
                 authToken: localStorage.getItem('authToken')
             }

@@ -18,11 +18,11 @@ const userSchema = new Schema({
   isPremium: {
     type: Boolean
   },
-  totalexpense: {
+  totalExpense: {
     type: Number,
     default: 0
   },
-  totalincome: {
+  totalIncome: {
     type: Number,
     default: 0
   },

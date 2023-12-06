@@ -1,6 +1,6 @@
 const Income = require('../models/income');
 const User = require('../models/user');
-const { Op } = require('sequelize');
+// const { Op } = require('sequelize');
 
 exports.addIncome = async (req, res) => {
     try {
@@ -27,7 +27,7 @@ exports.addIncome = async (req, res) => {
 exports.getIncome = async (req, res) => {
     try {
         const {userId} = req.user;
-        const {frequency} = req.body;
+        const {frequency} = req.query;
 
         const startDate = new Date();
         let dateFilter = { userId: userId };

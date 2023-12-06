@@ -1,6 +1,6 @@
 require("dotenv").config();
 const User = require("../models/user");
-const ForgotPassword = require("../models/forgotPasswordRequests");
+const ForgotPassword = require("../models/forgotPassword");
 const bcrypt = require("bcrypt");
 const brevo = require("@getbrevo/brevo");
 const { v4: uuidv4 } = require("uuid");
@@ -47,7 +47,7 @@ exports.forgotPassword = async (req, res) => {
       const forgotpmodel = new ForgotPassword({
         id: uniqueId,
         userId: user._id,
-        isactive: true,
+        isActive: true,
       })
       forgotpmodel.save()
       console.log(

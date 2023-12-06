@@ -6,8 +6,8 @@ const IncomeController = require('../controllers/income');
 
 const router  = express.Router();
 
-router.post('/add-income', validator,IncomeController.addIncome);
+router.post('/add-income', validator, IncomeController.addIncome);
 
-router.post('/get-income', validator,IncomeController.getIncome);
+router.get('/get-income', validator, IncomeController.getIncome);
 
 module.exports = router;

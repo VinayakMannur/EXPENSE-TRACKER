@@ -152,11 +152,8 @@ const HomePage = () => {
     const getExpenses = async () => {
         setLoading(true);
         await axios
-            .post(
-                `http://localhost:5000/get-expense?page=${pages}&items=${noItems}`,
-                {
-                    frequency: frequency,
-                },
+            .get(
+                `http://localhost:5000/get-expense?page=${pages}&items=${noItems}&frequency=${frequency}`,
                 {
                     headers: {
                         authToken: localStorage.getItem("authToken"),
@@ -184,12 +181,8 @@ const HomePage = () => {
 
     const deleteExpense = async (record) => {
         await axios
-            .post(
-                "http://localhost:5000/delete-expense",
-                {
-                    _id: record._id,
-                    amount: record.amount,
-                },
+            .delete(
+                `http://localhost:5000/delete-expense/${record._id}`,
                 {
                     headers: {
                         authToken: localStorage.getItem("authToken"),
@@ -207,21 +200,16 @@ const HomePage = () => {
 
     const editExpense1 = async (e) => {
         e.preventDefault();
-        const amount = document.getElementById("expenseAmount").value;
-        const category = document.getElementById("category").value;
-        const description = document.getElementById("description").value;
-        const date = document.getElementById("date").value;
-
+        const expense = {
+            amount: document.getElementById("expenseAmount").value,
+            category: document.getElementById("category").value,
+            description: document.getElementById("description").value,
+            date: document.getElementById("date").value,
+        }
+        
         await axios
-            .post(
-                "http://localhost:5000/edit-expense",
-                {
-                    id: expenseEditId,
-                    amount: amount,
-                    category: category,
-                    description: description,
-                    date: date,
-                },
+            .put(
+                `http://localhost:5000/edit-expense/${expenseEditId}`,expense,
                 {
                     headers: {
                         authToken: localStorage.getItem("authToken"),

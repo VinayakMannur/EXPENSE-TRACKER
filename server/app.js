@@ -22,7 +22,7 @@ const signupRoutes = require("./routes/signup");
 const loginRoutes = require("./routes/login");
 const expenseRoutes = require("./routes/expense");
 const premiumRoutes = require("./routes/premium");
-const forgotPasswordRoutes = require("./routes/forgotpassword");
+const forgotPasswordRoutes = require("./routes/forgotPassword");
 const incomeRoutes = require("./routes/income");
 // const reportRoutes = require("./routes/report");
 

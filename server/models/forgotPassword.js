@@ -8,7 +8,7 @@ const forgotPasswordSchema = new Schema({
     ref: "User",
     required: true,
   },
-  isactive: {
+  isActive: {
     type: Boolean
   },
 });
