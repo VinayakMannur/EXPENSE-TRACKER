@@ -11,7 +11,7 @@ const Login = () => {
 
         const email = document.getElementById('loginEmail').value;
 
-        await axios.post('http://localhost:5000/password/forgotpassword', {
+        await axios.post('https://expenseitracker-9se6.onrender.com/password/forgotpassword', {
             email: email
         })
             .then(responce => {

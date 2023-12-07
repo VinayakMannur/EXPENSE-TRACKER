@@ -11,7 +11,7 @@ const Updatedpassword = () => {
         const email= document.getElementById('loginEmail').value;
         const password = document.getElementById('loginPassword').value;
 
-        await axios.put('http://localhost:5000/password/updatepassword', {
+        await axios.put('https://expenseitracker-9se6.onrender.com/password/updatepassword', {
             email: email,
             password: password
         })

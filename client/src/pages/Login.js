@@ -15,7 +15,7 @@ const Login = () => {
         const password = document.getElementById('loginPassword').value;
         // const checked = document.getElementById('loginRemember').checked;
 
-        await axios.post('http://localhost:5000/login', {
+        await axios.post('https://expenseitracker-9se6.onrender.com/login', {
             email: email,
             password: password
         })

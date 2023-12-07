@@ -153,7 +153,7 @@ const HomePage = () => {
         setLoading(true);
         await axios
             .get(
-                `http://localhost:5000/get-expense?page=${pages}&items=${noItems}&frequency=${frequency}`,
+                `https://expenseitracker-9se6.onrender.com/get-expense?page=${pages}&items=${noItems}&frequency=${frequency}`,
                 {
                     headers: {
                         authToken: localStorage.getItem("authToken"),
@@ -182,7 +182,7 @@ const HomePage = () => {
     const deleteExpense = async (record) => {
         await axios
             .delete(
-                `http://localhost:5000/delete-expense/${record._id}`,
+                `https://expenseitracker-9se6.onrender.com/delete-expense/${record._id}`,
                 {
                     headers: {
                         authToken: localStorage.getItem("authToken"),
@@ -209,7 +209,7 @@ const HomePage = () => {
         
         await axios
             .put(
-                `http://localhost:5000/edit-expense/${expenseEditId}`,expense,
+                `https://expenseitracker-9se6.onrender.com/edit-expense/${expenseEditId}`,expense,
                 {
                     headers: {
                         authToken: localStorage.getItem("authToken"),
@@ -251,7 +251,7 @@ const HomePage = () => {
 
         await axios
             .post(
-                "http://localhost:5000/add-expense",
+                "https://expenseitracker-9se6.onrender.com/add-expense",
                 {
                     amount: amount,
                     category: category,
@@ -280,7 +280,7 @@ const HomePage = () => {
 
         await axios
             .post(
-                "http://localhost:5000/add-income",
+                "https://expenseitracker-9se6.onrender.com/add-income",
                 {
                     amount: amount,
                     description: description,
@@ -304,7 +304,7 @@ const HomePage = () => {
     };
 
     const buyPremium = async (e) => {
-        const response = await axios.get("http://localhost:5000/buypremium", {
+        const response = await axios.get("https://expenseitracker-9se6.onrender.com/buypremium", {
             headers: {
                 authToken: localStorage.getItem("authToken"),
             },
@@ -315,7 +315,7 @@ const HomePage = () => {
             handler: async function (response) {
                 await axios
                     .post(
-                        "http://localhost:5000/updatetransactionstatus",
+                        "https://expenseitracker-9se6.onrender.com/updatetransactionstatus",
                         {
                             orderId: options.order_id,
                             paymentId: response.razorpay_payment_id,
@@ -347,7 +347,7 @@ const HomePage = () => {
         rpz1.on("payment.failed", function (response) {
             axios
                 .post(
-                    "http://localhost:5000/updatetransactionstatus",
+                    "https://expenseitracker-9se6.onrender.com/updatetransactionstatus",
                     {
                         orderId: options.order_id,
                         paymentId: response.error.metadata.payment_id,
@@ -367,7 +367,7 @@ const HomePage = () => {
 
     const getLeaderBoard = async () => {
         await axios
-            .get("http://localhost:5000/leaderboard", {
+            .get("https://expenseitracker-9se6.onrender.com/leaderboard", {
                 headers: {
                     authToken: localStorage.getItem("authToken"),
                 },
@@ -381,7 +381,7 @@ const HomePage = () => {
 
     const getPreviosDownloads = async () => {
         await axios
-            .get("http://localhost:5000/getdownloadlinks", {
+            .get("https://expenseitracker-9se6.onrender.com/getdownloadlinks", {
                 headers: {
                     authToken: localStorage.getItem("authToken"),
                 },

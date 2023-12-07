@@ -14,7 +14,7 @@ const Signup = () => {
     const password = document.getElementById('signUpPassword').value;
 
     if ((email && name && password) !== '') {
-      await axios.post('http://localhost:5000/signup', {
+      await axios.post('https://expenseitracker-9se6.onrender.com/signup', {
         email: email,
         name: name,
         password: password

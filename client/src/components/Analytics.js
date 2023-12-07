@@ -26,7 +26,7 @@ const Analytics = ({ allExpenses, frequency }) => {
     })
 
     const getIncome = async () => {
-        await axios.get(`http://localhost:5000/get-income?frequency=${frequency}`,
+        await axios.get(`https://expenseitracker-9se6.onrender.com/get-income?frequency=${frequency}`,
         {
             headers: {
                 authToken: localStorage.getItem('authToken')
@@ -324,7 +324,7 @@ const Analytics = ({ allExpenses, frequency }) => {
 
             // console.log(formData.get('pdfFile'));
 
-            await axios.post("http://localhost:5000/download", formData ,{
+            await axios.post("https://expenseitracker-9se6.onrender.com/download", formData ,{
                 headers: {
                     authToken: localStorage.getItem("authToken"),
                     " Content-Type ": 'multipart/form-data',

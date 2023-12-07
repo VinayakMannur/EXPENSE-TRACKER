@@ -15,7 +15,7 @@ exports.forgotPassword = async (req, res) => {
       res.json({ success: false, msg: "Email Id doesnt Exists!!" });
     } else {
       const uniqueId = uuidv4();
-      const URL = `http://localhost:5000/password/forgotpassword/${uniqueId}`;
+      const URL = `https://expenseitracker-9se6.onrender.com/password/forgotpassword/${uniqueId}`;
 
       let defaultClient = brevo.ApiClient.instance;
 
@@ -64,7 +64,7 @@ exports.forgotPassword = async (req, res) => {
 };
 
 exports.resetLink = async (req, res) => {
-  res.redirect("http://localhost:5000/updatepassword");
+  res.redirect("https://expenseitracker-9se6.onrender.com/updatepassword");
 };
 
 exports.updatePassword = async (req, res) => {
