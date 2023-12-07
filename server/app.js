@@ -22,7 +22,7 @@ const signupRoutes = require("./routes/signup");
 const loginRoutes = require("./routes/login");
 const expenseRoutes = require("./routes/expense");
 const premiumRoutes = require("./routes/premium");
-const forgotPasswordRoutes = require("./routes/forgotPassword");
+const forgotPasswordRoutes = require("./routes/forgot-password");
 const incomeRoutes = require("./routes/income");
 // const reportRoutes = require("./routes/report");
 
@@ -85,7 +85,7 @@ mongoose
   )
   .then((result) => {
     app.listen(process.env.PORT || 5000,()=>{
-        console.log('Avengers assemble at PORT 5000');
+        console.log(`Avengers assemble at PORT ${process.env.PORT }`);
     })
   })
   .catch((err) => console.log(err));
