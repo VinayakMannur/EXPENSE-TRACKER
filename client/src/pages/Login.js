@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
 import { Link } from "react-router-dom";
@@ -7,17 +7,39 @@ import { useNavigate } from 'react-router';
 const Login = () => {
 
     const navigate = useNavigate();
+    const [demo, setDemo] = useState(false);
 
-    const loginBtn = async (e) => {
+    const demoAccount = (e)=>{
+        loginBtn(e, true)
+    }
+
+    const loginBtn = async (e, isDemo=false) => {
         e.preventDefault()
 
-        const email = document.getElementById('loginEmail').value;
-        const password = document.getElementById('loginPassword').value;
+        let email
+        let password
         // const checked = document.getElementById('loginRemember').checked;
+
+        if(isDemo){
+            setDemo(true)
+            email = 'demo@gmail.com'
+            password = 'demo'
+        }else{
+            email = document.getElementById('loginEmail').value;
+            password = document.getElementById('loginPassword').value;
+        }
+
+        setTimeout(()=>{
+            alert(`Hiii kindly wait for a minute after pressing Login button
+            Since the server is hosted on a free service the server 
+            needs to spin up for every request after 15min of inactivity!!!
+            Thank u
+            `)  
+        },500)
 
         await axios.post('https://expenseitracker-9se6.onrender.com/login', {
             email: email,
-            password: password
+            password: password 
         })
             .then(responce => {
                 localStorage.setItem("authToken", responce.data.authToken)
@@ -72,6 +94,7 @@ const Login = () => {
                                 <div className='mt-4'>
                                     <p>Dont have an account..?</p>
                                     <Link className="btn btn-sm btn-success me-2" to="/signup">Sign Up</Link>
+                                    <button type="submit" onClick={demoAccount} className="btn btn-sm btn-success me-">**Login Through Demo Account**</button>
                                 </div>
                             </form>
                         </div>
